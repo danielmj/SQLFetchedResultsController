@@ -7,12 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E2958741B425DB800421BF7 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2958731B425DB800421BF7 /* TableViewController.swift */; };
 		2E2E9DE11B422AED002EE811 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE01B422AED002EE811 /* AppDelegate.swift */; };
-		2E2E9DE31B422AED002EE811 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE21B422AED002EE811 /* ViewController.swift */; };
 		2E2E9DE61B422AED002EE811 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE41B422AED002EE811 /* Main.storyboard */; };
 		2E2E9DE81B422AED002EE811 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE71B422AED002EE811 /* Images.xcassets */; };
 		2E2E9DEB1B422AED002EE811 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE91B422AED002EE811 /* LaunchScreen.xib */; };
 		2E2E9DF71B422AED002EE811 /* SQL_Fetch_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9DF61B422AED002EE811 /* SQL_Fetch_ExampleTests.swift */; };
+		2E2E9E0D1B422B1B002EE811 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E031B422B1B002EE811 /* FMDatabase.m */; };
+		2E2E9E0E1B422B1B002EE811 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E051B422B1B002EE811 /* FMDatabaseAdditions.m */; };
+		2E2E9E0F1B422B1B002EE811 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E071B422B1B002EE811 /* FMDatabasePool.m */; };
+		2E2E9E101B422B1B002EE811 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E091B422B1B002EE811 /* FMDatabaseQueue.m */; };
+		2E2E9E111B422B1B002EE811 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E0C1B422B1B002EE811 /* FMResultSet.m */; };
+		2E2E9E181B422C87002EE811 /* CreateDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E171B422C87002EE811 /* CreateDataViewController.swift */; };
+		2E2E9E1C1B422FBA002EE811 /* DatabaseSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E1B1B422FBA002EE811 /* DatabaseSetup.swift */; };
+		2E2E9E201B42351E002EE811 /* image1.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9E1D1B42351E002EE811 /* image1.png */; };
+		2E2E9E211B42351E002EE811 /* image2.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9E1E1B42351E002EE811 /* image2.png */; };
+		2E2E9E221B42351E002EE811 /* image3.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9E1F1B42351E002EE811 /* image3.png */; };
+		2E2E9E241B4238C9002EE811 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2E9E231B4238C9002EE811 /* libsqlite3.dylib */; };
+		2E44B9221B43F02B00403B91 /* SQLFetchedResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E44B9201B43F02B00403B91 /* SQLFetchedResultsController.swift */; };
+		2E44B9231B43F02B00403B91 /* SQLFetchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E44B9211B43F02B00403B91 /* SQLFetchRequest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,16 +39,36 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2E2958731B425DB800421BF7 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		2E2E9DDB1B422AED002EE811 /* SQL Fetch Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SQL Fetch Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E2E9DDF1B422AED002EE811 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E2E9DE01B422AED002EE811 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2E2E9DE21B422AED002EE811 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		2E2E9DE51B422AED002EE811 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2E2E9DE71B422AED002EE811 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		2E2E9DEA1B422AED002EE811 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		2E2E9DF01B422AED002EE811 /* SQL Fetch ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQL Fetch ExampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E2E9DF51B422AED002EE811 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E2E9DF61B422AED002EE811 /* SQL_Fetch_ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL_Fetch_ExampleTests.swift; sourceTree = "<group>"; };
+		2E2E9E011B422B1B002EE811 /* SQL Fetch Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SQL Fetch Example-Bridging-Header.h"; sourceTree = "<group>"; };
+		2E2E9E021B422B1B002EE811 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		2E2E9E031B422B1B002EE811 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		2E2E9E041B422B1B002EE811 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		2E2E9E051B422B1B002EE811 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		2E2E9E061B422B1B002EE811 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+		2E2E9E071B422B1B002EE811 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+		2E2E9E081B422B1B002EE811 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		2E2E9E091B422B1B002EE811 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		2E2E9E0A1B422B1B002EE811 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
+		2E2E9E0B1B422B1B002EE811 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		2E2E9E0C1B422B1B002EE811 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		2E2E9E171B422C87002EE811 /* CreateDataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateDataViewController.swift; sourceTree = "<group>"; };
+		2E2E9E1B1B422FBA002EE811 /* DatabaseSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSetup.swift; sourceTree = "<group>"; };
+		2E2E9E1D1B42351E002EE811 /* image1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image1.png; sourceTree = "<group>"; };
+		2E2E9E1E1B42351E002EE811 /* image2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image2.png; sourceTree = "<group>"; };
+		2E2E9E1F1B42351E002EE811 /* image3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image3.png; sourceTree = "<group>"; };
+		2E2E9E231B4238C9002EE811 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		2E44B9201B43F02B00403B91 /* SQLFetchedResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLFetchedResultsController.swift; sourceTree = SOURCE_ROOT; };
+		2E44B9211B43F02B00403B91 /* SQLFetchRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLFetchRequest.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E2E9E241B4238C9002EE811 /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,6 +93,7 @@
 		2E2E9DD21B422AED002EE811 = {
 			isa = PBXGroup;
 			children = (
+				2E2E9E231B4238C9002EE811 /* libsqlite3.dylib */,
 				2E2E9DDD1B422AED002EE811 /* SQL Fetch Example */,
 				2E2E9DF31B422AED002EE811 /* SQL Fetch ExampleTests */,
 				2E2E9DDC1B422AED002EE811 /* Products */,
@@ -77,11 +112,17 @@
 		2E2E9DDD1B422AED002EE811 /* SQL Fetch Example */ = {
 			isa = PBXGroup;
 			children = (
+				2E2E9E121B422B2E002EE811 /* Database */,
+				2E2E9E011B422B1B002EE811 /* SQL Fetch Example-Bridging-Header.h */,
 				2E2E9DE01B422AED002EE811 /* AppDelegate.swift */,
-				2E2E9DE21B422AED002EE811 /* ViewController.swift */,
 				2E2E9DE41B422AED002EE811 /* Main.storyboard */,
+				2E2958731B425DB800421BF7 /* TableViewController.swift */,
+				2E2E9E171B422C87002EE811 /* CreateDataViewController.swift */,
 				2E2E9DE71B422AED002EE811 /* Images.xcassets */,
 				2E2E9DE91B422AED002EE811 /* LaunchScreen.xib */,
+				2E2E9E1D1B42351E002EE811 /* image1.png */,
+				2E2E9E1E1B42351E002EE811 /* image2.png */,
+				2E2E9E1F1B42351E002EE811 /* image3.png */,
 				2E2E9DDE1B422AED002EE811 /* Supporting Files */,
 			);
 			path = "SQL Fetch Example";
@@ -110,6 +151,43 @@
 				2E2E9DF51B422AED002EE811 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2E2E9E001B422AFF002EE811 /* FMDB */ = {
+			isa = PBXGroup;
+			children = (
+				2E2E9E021B422B1B002EE811 /* FMDatabase.h */,
+				2E2E9E031B422B1B002EE811 /* FMDatabase.m */,
+				2E2E9E041B422B1B002EE811 /* FMDatabaseAdditions.h */,
+				2E2E9E051B422B1B002EE811 /* FMDatabaseAdditions.m */,
+				2E2E9E061B422B1B002EE811 /* FMDatabasePool.h */,
+				2E2E9E071B422B1B002EE811 /* FMDatabasePool.m */,
+				2E2E9E081B422B1B002EE811 /* FMDatabaseQueue.h */,
+				2E2E9E091B422B1B002EE811 /* FMDatabaseQueue.m */,
+				2E2E9E0A1B422B1B002EE811 /* FMDB.h */,
+				2E2E9E0B1B422B1B002EE811 /* FMResultSet.h */,
+				2E2E9E0C1B422B1B002EE811 /* FMResultSet.m */,
+			);
+			name = FMDB;
+			sourceTree = "<group>";
+		};
+		2E2E9E121B422B2E002EE811 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				2E44B91F1B43EDC200403B91 /* SQLFetchedResultsController */,
+				2E2E9E001B422AFF002EE811 /* FMDB */,
+				2E2E9E1B1B422FBA002EE811 /* DatabaseSetup.swift */,
+			);
+			name = Database;
+			sourceTree = "<group>";
+		};
+		2E44B91F1B43EDC200403B91 /* SQLFetchedResultsController */ = {
+			isa = PBXGroup;
+			children = (
+				2E44B9201B43F02B00403B91 /* SQLFetchedResultsController.swift */,
+				2E44B9211B43F02B00403B91 /* SQLFetchRequest.swift */,
+			);
+			name = SQLFetchedResultsController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -193,7 +271,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E2E9DE61B422AED002EE811 /* Main.storyboard in Resources */,
+				2E2E9E221B42351E002EE811 /* image3.png in Resources */,
 				2E2E9DEB1B422AED002EE811 /* LaunchScreen.xib in Resources */,
+				2E2E9E201B42351E002EE811 /* image1.png in Resources */,
+				2E2E9E211B42351E002EE811 /* image2.png in Resources */,
 				2E2E9DE81B422AED002EE811 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,8 +293,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E2E9DE31B422AED002EE811 /* ViewController.swift in Sources */,
+				2E2E9E0D1B422B1B002EE811 /* FMDatabase.m in Sources */,
+				2E2E9E181B422C87002EE811 /* CreateDataViewController.swift in Sources */,
+				2E2E9E111B422B1B002EE811 /* FMResultSet.m in Sources */,
+				2E2E9E0F1B422B1B002EE811 /* FMDatabasePool.m in Sources */,
 				2E2E9DE11B422AED002EE811 /* AppDelegate.swift in Sources */,
+				2E2958741B425DB800421BF7 /* TableViewController.swift in Sources */,
+				2E2E9E0E1B422B1B002EE811 /* FMDatabaseAdditions.m in Sources */,
+				2E44B9221B43F02B00403B91 /* SQLFetchedResultsController.swift in Sources */,
+				2E2E9E101B422B1B002EE811 /* FMDatabaseQueue.m in Sources */,
+				2E2E9E1C1B422FBA002EE811 /* DatabaseSetup.swift in Sources */,
+				2E44B9231B43F02B00403B91 /* SQLFetchRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,9 +430,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = "SQL Fetch Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SQL Fetch Example/SQL Fetch Example-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -350,9 +443,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = "SQL Fetch Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SQL Fetch Example/SQL Fetch Example-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -409,6 +504,7 @@
 				2E2E9DFC1B422AED002EE811 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2E2E9DFD1B422AED002EE811 /* Build configuration list for PBXNativeTarget "SQL Fetch ExampleTests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +513,7 @@
 				2E2E9DFF1B422AED002EE811 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
