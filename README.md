@@ -1,19 +1,16 @@
 # SQLFetchedResultsController
 
-An attempt at making it easier to setup tables with SQLite. There are few examples of how to properly page through results in a database. I want to fix this.
+An attempt at making it easier to setup tables with SQLite. There arent many examples of how to properly page through results in a database. I want to fix this. For those that enjoy the flexibility that SQL has to offer but dont want to give up the ease of setting up tables that you would get with Core Data's NSFetchedResultsController, this class is for you.
 
 **WARNING** This script is still being developed. It might not always show the list correctly. Please bear with me while I get things worked out. If you want to help me address some of my Todo topics below, please do.
 
 # How Does It Work?
 
-Loading objects incrementally is fast. This is because it uses the sort descriptors as part of the WHERE 
-clause to improve speed. It is recommended that you use indexed sort descriptors for maximum speed.
+The class attempts to progressively load objects using the where clause and the first sort descriptor. Basically if you are ascending in the table the where clause will use sortKey >= sortValue to page the next results and if you are descending in the table the where clause will use sortKey <= sortValue to page the next results. The problem with this is duplicates. To get around this, we use the OFFSET value. Because OFFSET is inherently slow, it is better to use a sortKey that does not have that many duplicates.
 
-Loading objects at arbitrary locations will be slow(er). This is because the program does not know the
-values of the sort descriptors and it does not know the primary key value at this location. Because of this, the program must
-use the closest known values as pivots, and then do an offset from that location. Offset is inherently bad 
-because it causes the database to do a sequential search. This is not a big deal if the jump you are making 
-is a distance of 5 values. However, if you are making a jump of 1 million values, you will see slowing.
+This class also uses the table's primary key to help distinguish the tuple in a group of duplicate sorted values. The primary key is derived from the first table specified. This primary key will always be given in the resulting object.
+
+When the class detects a large jump in the table, it will set the OFFSET from the closest known value.
 
 # Requires
 
