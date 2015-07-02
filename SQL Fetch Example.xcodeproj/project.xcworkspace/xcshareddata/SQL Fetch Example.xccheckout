@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>CD2E156A-4A8B-4348-9E4D-C0DE3F7811A7</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>SQL Fetch Example</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>FC2802EDF55DFDCC996A4D41F4699EF6AA48498B</key>
 		<string>https://github.com/danielmj/SQLFetchedResultsController.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>SQL Fetch Example.xcodeproj/project.xcworkspace</string>
+	<string>SQL Fetch Example.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>FC2802EDF55DFDCC996A4D41F4699EF6AA48498B</key>

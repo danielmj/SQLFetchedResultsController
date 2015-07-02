@@ -28,7 +28,7 @@ is a distance of 5 values. However, if you are making a jump of 1 million values
 */
 
 private var BLOCKS_IN_MEMORY = 3
-private let DEBUG = false
+private let DEBUG = true
 
 public class SQLFetchedResultsController: NSObject {
     
@@ -45,6 +45,37 @@ public class SQLFetchedResultsController: NSObject {
     public var numberOfRows = 0
     
     
+    /*
+
+    
+    a a 1
+    a a 4
+    a a 7
+    a a 10 <- Piv
+    a a 13
+    
+     OFFSET = X + (SELECT count(*) FROM (SELECT id FROM Test Where $1 > a AND $2 > a id < 10 ORDER BY $1 ASC, $2 ASC, id ASC))
+    
+    a b 2
+    a b 5
+    a b 8
+    a b 11
+    a b 14
+    
+    a f 3
+    a f 6
+    a f 9 <- N
+    a f 12
+    a f 15
+    
+    REMOVE id from condition statement
+    KEEP id in order by statement
+    MODIFY id
+    
+    OFFSET = 8 +
+    
+*/
+    
     init(request:SQLFetchRequest, pathToDatabase:String) {
         fetchRequest = request
         _databasePath = pathToDatabase
@@ -60,20 +91,6 @@ public class SQLFetchedResultsController: NSObject {
         
         numberOfRows = fetchTotalRowCount()
         if DEBUG { println("ROW COUNT: \(numberOfRows)") }
-        
-        var found = false
-        for sorter in fetchRequest.sortDescriptors ?? []
-        {
-            if sorter.key == primaryKey
-            {
-                found = true
-                break
-            }
-        }
-        
-        if !found {
-            fetchRequest.sortDescriptors += [(key:primaryKey, isASC:true)]
-        }
     }
     
     public func objectAt(indexPath:NSIndexPath)->[NSObject:AnyObject]? {
@@ -249,7 +266,7 @@ public class SQLFetchedResultsController: NSObject {
     private func updateResults(isAscending:Bool, limit:Int, offset:Int) {
         var pivot = getPivot(isAscending)
         
-        if offset >= fetchRequest.batchSize //A JUMP!
+        if offset >= bufferSize() //A JUMP!
         {
             //Completely replace the array
             loadedResults = []
@@ -265,6 +282,11 @@ public class SQLFetchedResultsController: NSObject {
         queryAndInsertIntoArray(isAscending, sql:sql, parameters:parameters)
         
         trimTheFat(isAscending)
+    }
+    
+    private func bufferSize()->Int
+    {
+        return fetchRequest.batchSize
     }
     
     private func trimTheFat(isAscending:Bool) {
@@ -303,7 +325,7 @@ public class SQLFetchedResultsController: NSObject {
         
         var db = openDatabase()
         var s = db?.executeQuery(sql, withArgumentsInArray: queryParameters)
-        var i=0;
+        var currentRecord = 0;
         while (s?.next() ?? false) {
             
             var newResult = [NSObject:AnyObject]()
@@ -321,6 +343,7 @@ public class SQLFetchedResultsController: NSObject {
             else {
                 loadedResults.insert(newResult, atIndex: 0)
             }
+            currentRecord++
         }
         db?.close()
     }
@@ -376,16 +399,65 @@ public class SQLFetchedResultsController: NSObject {
         
         result = getSelectFieldsClause()
         result = appendTableName(result)
-        result = appendWhereClause(result, parameters:&parameters, pivotResult: pivotResult, isAscending: isAscending)
+        result = appendWhereClause(result, useEqualSigns:false, parameters:&parameters, pivotResult: pivotResult, isAscending: isAscending)
         result = appendGroupByClause(result)
         result = appendHavingClause(result)
         result = appendOrderByClause(result, isAscending: isAscending)
         result = appendLimitClause(result, limit: limit)
-        result = appendOffsetClause(result, offset: offset)
+        result = appendOffsetClause(result, parameters: &parameters, isAscending: isAscending, pivotResult: pivotResult, offset: offset)
         
-        if DEBUG { println("SQL: \(result)") }
+        if DEBUG { println("SQL: \(result) \nParameters: \(parameters)") }
         
-        return result
+        return result + ";"
+    }
+    
+    private func testOffset(isAscending:Bool, pivotResult:[NSObject:AnyObject]?, offset:Int)->Int
+    {
+        var parameters:[AnyObject] = []
+        if pivotResult != nil //&& false
+        {
+            var table = fetchRequest.table.componentsSeparatedByString(" ")[0]
+            //Offsets from the duplicates
+            var duplicateOffsetSQL = "SELECT count(*) FROM ( SELECT \(primaryKey) FROM \(table) "
+            
+            duplicateOffsetSQL = appendWhereClause(duplicateOffsetSQL, useEqualSigns:true, parameters: &parameters, pivotResult: pivotResult, isAscending: isAscending)
+            
+            //Reverse to query only results between start of duplicates and current
+            var reversedDirection = !isAscending
+            var directionStatement = "<="
+            if reversedDirection {
+                directionStatement = ">="
+            }
+            
+            var pkValue:AnyObject! = pivotResult![primaryKey]
+            var reverseCondition = "\(primaryKey) \(directionStatement) ?"
+            parameters.append(pkValue)
+            
+            if duplicateOffsetSQL.rangeOfString("WHERE") == nil
+            {
+                duplicateOffsetSQL += " WHERE \(reverseCondition)"
+            }
+            else {
+                duplicateOffsetSQL += " AND \(reverseCondition)"
+            }
+            
+            duplicateOffsetSQL += " )"
+            
+            var offsetAddition = " \(duplicateOffsetSQL) ;"
+            
+            var result = 0
+            var db = openDatabase()
+            
+            var s = db?.executeQuery(offsetAddition, withArgumentsInArray: parameters)
+            if (s?.next() ?? false) {
+                return Int(s!.intForColumnIndex(0))
+            }
+            return -1
+        }
+        else
+        {
+            return -1
+        }
     }
     
     private func getSelectFieldsClause()->String {
@@ -426,7 +498,7 @@ public class SQLFetchedResultsController: NSObject {
         return result
     }
     
-    private func appendWhereClause(sql:String, inout parameters:[AnyObject], pivotResult:[NSObject:AnyObject]?, isAscending:Bool)->String {
+    private func appendWhereClause(sql:String, useEqualSigns:Bool, inout parameters:[AnyObject], pivotResult:[NSObject:AnyObject]?, isAscending:Bool)->String {
         var result = sql.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         
         var whereResult = ""
@@ -438,23 +510,15 @@ public class SQLFetchedResultsController: NSObject {
             {
                 var descriptor = fetchRequest.sortDescriptors[i]
                 
-                var directionStatement = ""
                 
-                if descriptor.key == primaryKey
-                {
-                    directionStatement = "<"
-                    if isAscending {
-                        directionStatement = ">"
-                    }
-                }
-                else
+                var directionStatement = "="
+                if !useEqualSigns
                 {
                     directionStatement = "<="
                     if isAscending {
                         directionStatement = ">="
                     }
                 }
-                
                 
                 if i != 0
                 {
@@ -477,7 +541,7 @@ public class SQLFetchedResultsController: NSObject {
         
         if count(whereResult) > 0
         {
-            result += " WHERE" + whereResult
+            result += " WHERE (" + whereResult + ")"
         }
         
         return result
@@ -487,9 +551,14 @@ public class SQLFetchedResultsController: NSObject {
         var result = sql.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         result += " ORDER BY"
         
+        
+        var primaryKeyFound = false
         for var i=0; i < (fetchRequest.sortDescriptors.count); i++
         {
             let descriptor = fetchRequest.sortDescriptors[i]
+
+            //Determine if primary key is included
+            // IF FOUND, because the primary key is unique, there is no need for any other sort descriptors
             
             var descriptorIsASC = descriptor.isASC
             if !isAscending {
@@ -502,10 +571,27 @@ public class SQLFetchedResultsController: NSObject {
             }
             
             result += " \(descriptor.key) \(direction)"
-            if i != (fetchRequest.sortDescriptors.count - 1) {
+            
+            if descriptor.key == primaryKey
+            {
+                primaryKeyFound = true
+                break
+            }
+            
+            if i+1 < fetchRequest.sortDescriptors.count {
                 result += ","
             }
         }
+
+        if !primaryKeyFound
+        {
+            var direction = "DESC"
+            if isAscending {
+                direction = "ASC"
+            }
+            result += ",\(primaryKey) \(direction)"
+        }
+        
         return result
     }
     
@@ -534,14 +620,55 @@ public class SQLFetchedResultsController: NSObject {
         return trimmedSQL + " LIMIT \(limit)"
     }
     
-    private func appendOffsetClause(sql:String, offset:Int)->String {
-//        if offset == 0
-//        {
-//            return sql
-//        }
+    private func appendOffsetClause(sql:String, inout parameters:[AnyObject], isAscending:Bool, pivotResult:[NSObject:AnyObject]?, offset:Int)->String
+    {
+        var offsetAddition = ""
+        if pivotResult != nil //&& false
+        {
+            var table = fetchRequest.table.componentsSeparatedByString(" ")[0]
+            //Offsets from the duplicates
+            var duplicateOffsetSQL = "(SELECT count(*) FROM ( SELECT \(primaryKey) FROM \(table) "
+            
+            duplicateOffsetSQL = appendWhereClause(duplicateOffsetSQL, useEqualSigns:true, parameters: &parameters, pivotResult: pivotResult, isAscending: isAscending)
+           
+            //Reverse to query only results between start of duplicates and current
+            var reversedDirection = !isAscending
+            var directionStatement = "<="
+            if reversedDirection {
+                directionStatement = ">="
+            }
+            
+            var pkValue:AnyObject! = pivotResult![primaryKey]
+            var reverseCondition = "\(primaryKey) \(directionStatement) ?"
+            parameters.append(pkValue)
+            
+            if duplicateOffsetSQL.rangeOfString("WHERE") == nil
+            {
+                duplicateOffsetSQL += " WHERE \(reverseCondition)"
+            }
+            else {
+                duplicateOffsetSQL += " AND \(reverseCondition)"
+            }
+            
+            duplicateOffsetSQL = appendOrderByClause(duplicateOffsetSQL, isAscending: isAscending)
+            duplicateOffsetSQL = appendGroupByClause(duplicateOffsetSQL)
+            duplicateOffsetSQL = appendHavingClause(duplicateOffsetSQL)
+            
+            duplicateOffsetSQL += " ))"
+            
+            var sign = "+"
+            var modifier = ""
+            if !isAscending
+            {
+//                sign = "-"
+//                var modifier = " - 1"
+            }
+            
+            offsetAddition = "\(sign) ( \(duplicateOffsetSQL) \(modifier) )"
+        }
         
         var trimmedSQL = sql.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        return trimmedSQL + " OFFSET \(offset)"
+        return trimmedSQL + " OFFSET ( \(offset) \(offsetAddition) )"
     }
     
     private func openDatabase()->FMDatabase? {
