@@ -37,15 +37,12 @@ public class SQLFetchedResultsController: NSObject {
     private var lastTableIndex:Int = -1
     private var primaryKey:String = ""
     private var _databasePath:String
-
     
     public var databasePath:String {   get { return _databasePath }    }
     
     public var fetchRequest:SQLFetchRequest
     
     public var numberOfRows = 0
-    
-    
     
     
     init(request:SQLFetchRequest, pathToDatabase:String) {
@@ -55,13 +52,14 @@ public class SQLFetchedResultsController: NSObject {
         super.init()
 
         primaryKey = fetchPrimaryKey() ?? ""
-        numberOfRows = fetchTotalRowCount()
-        println("ROW COUNT: \(numberOfRows)")
         if count(primaryKey) == 0
         {
             NSLog("[ERROR] Table does not include a primary key")
             abort()
         }
+        
+        numberOfRows = fetchTotalRowCount()
+        if DEBUG { println("ROW COUNT: \(numberOfRows)") }
         
         var found = false
         for sorter in fetchRequest.sortDescriptors ?? []
@@ -109,6 +107,12 @@ public class SQLFetchedResultsController: NSObject {
         if DEBUG { println("NEW currentIndexStart: \(loadedIndexStart) count:\(loadedResults.count)") }
         
         return result
+    }
+    
+    public func previewSQL()->(SQL:String, Parameters:[AnyObject])
+    {
+        var param:[AnyObject] = []
+        return (makeUpdateSQL(&param, pivotResult: nil, isAscending: true, limit: fetchRequest.batchSize, offset: 0), param)
     }
     
     
@@ -335,8 +339,10 @@ public class SQLFetchedResultsController: NSObject {
     private func fetchPrimaryKey()->String? {
         var result:String? = nil
         
+        var table = fetchRequest.table.componentsSeparatedByString(" ")[0]
+        
         var db = openDatabase()
-        var sql = "PRAGMA table_info(\(fetchRequest.table));";
+        var sql = "PRAGMA table_info(\(table));";
         var rs = db?.executeQuery(sql, withArgumentsInArray: nil)
         while (rs?.next() ?? false)
         {
@@ -559,7 +565,7 @@ public class SQLFetchedResultsController: NSObject {
         result = appendHavingClause(result)
         result += ");"
         
-        println("COUNT: \(result)")
+        if DEBUG { println("COUNT: \(result)") }
         
         return result
     }
@@ -571,9 +577,7 @@ public class SQLFetchedResultsController: NSObject {
         var i = 0
         for item in loadedResults
         {
-            var id:AnyObject! = item["id"]
-            var title:AnyObject! = item["title"]
-            println("\(++i). id: \(id), title: \(title)")
+            println("\(++i). \(item)")
         }
     }
 }
