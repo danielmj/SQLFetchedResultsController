@@ -28,7 +28,7 @@ is a distance of 5 values. However, if you are making a jump of 1 million values
 */
 
 private var BLOCKS_IN_MEMORY = 3
-private let DEBUG = true
+private let DEBUG = false
 
 public class SQLFetchedResultsController: NSObject {
     
@@ -115,6 +115,7 @@ public class SQLFetchedResultsController: NSObject {
         if DEBUG { printResults() }
         
         var index = getActualIndex(indexPath.row)
+        if DEBUG { println("Accessing Loaded Index: \(index)") }
         if index >= 0 && index < loadedResults.count
         {
             result = loadedResults[index]
@@ -152,13 +153,13 @@ public class SQLFetchedResultsController: NSObject {
         
         if start+count > numberOfRows
         {
-            count = fetchRequest.batchSize * BLOCKS_IN_MEMORY * 2 / 3
+            count = fetchRequest.batchSize * BLOCKS_IN_MEMORY
             start = numberOfRows - count
         }
         
         if start < 0
         {
-            count = fetchRequest.batchSize * BLOCKS_IN_MEMORY * 2 / 3
+            count = fetchRequest.batchSize * BLOCKS_IN_MEMORY
             start = 0
         }
         
@@ -506,9 +507,9 @@ public class SQLFetchedResultsController: NSObject {
         if pivotResult != nil
         {
             whereResult += " ("
-            for var i=0; i < (fetchRequest.sortDescriptors.count); i++
+            if fetchRequest.sortDescriptors.count > 0
             {
-                var descriptor = fetchRequest.sortDescriptors[i]
+                var descriptor = fetchRequest.sortDescriptors[0]
                 
                 
                 var directionStatement = "="
@@ -520,10 +521,10 @@ public class SQLFetchedResultsController: NSObject {
                     }
                 }
                 
-                if i != 0
-                {
-                    whereResult += " AND"
-                }
+//                if i != 0
+//                {
+//                    whereResult += " AND"
+//                }
                 whereResult += " \(descriptor.key) \(directionStatement) ?"
                 var descriptorValue:AnyObject = pivotResult![descriptor.key]!
                 parameters.append(descriptorValue)
