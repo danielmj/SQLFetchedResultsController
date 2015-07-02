@@ -56,6 +56,8 @@ Then just setup the table
         var result = fetchController?.objectAt(indexPath)
         var id:AnyObject! = result?["id"]
         var title:AnyObject! = result?["title"]
+        var idAvg:AnyObject! = result?["idAvg"]
+        
         cell.textLabel?.text = "\(id). \(title)"
         
         return cell
