@@ -30,7 +30,7 @@ Required. Please enter the table(s) for which you are querying. This value corre
     
  Default: *
  */
-    var fields:String?
+    var fields:[String]?
     
     
     

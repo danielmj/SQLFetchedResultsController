@@ -17,10 +17,11 @@ class TableViewController: UITableViewController
         
         var request = SQLFetchRequest()
         request.table = "Test"
-        request.fields = nil
-        request.predicate = nil
-        request.sortDescriptors = []
-        request.groupBy = nil
+        request.fields = ["id","title", "count(*)", "*"]
+        request.predicate = "id % 10 = 0 AND title != 'SomeString'"
+        request.sortDescriptors = [(key:"title", isASC:true)]
+        request.groupBy = "title"
+        request.having = "count(*) > 3"
         fetchController = SQLFetchedResultsController(request: request, pathToDatabase: DatabaseSetup.getDatabasePath())
     }
     

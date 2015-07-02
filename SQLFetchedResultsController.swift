@@ -28,6 +28,7 @@ is a distance of 5 values. However, if you are making a jump of 1 million values
 */
 
 private var BLOCKS_IN_MEMORY = 3
+private let DEBUG = false
 
 public class SQLFetchedResultsController: NSObject {
     
@@ -36,7 +37,7 @@ public class SQLFetchedResultsController: NSObject {
     private var lastTableIndex:Int = -1
     private var primaryKey:String = ""
     private var _databasePath:String
-    
+
     
     public var databasePath:String {   get { return _databasePath }    }
     
@@ -45,15 +46,17 @@ public class SQLFetchedResultsController: NSObject {
     public var numberOfRows = 0
     
     
+    
+    
     init(request:SQLFetchRequest, pathToDatabase:String) {
         fetchRequest = request
         _databasePath = pathToDatabase
         
         super.init()
-        
+
+        primaryKey = fetchPrimaryKey() ?? ""
         numberOfRows = fetchTotalRowCount()
         println("ROW COUNT: \(numberOfRows)")
-        primaryKey = fetchPrimaryKey() ?? ""
         if count(primaryKey) == 0
         {
             NSLog("[ERROR] Table does not include a primary key")
@@ -78,30 +81,32 @@ public class SQLFetchedResultsController: NSObject {
     public func objectAt(indexPath:NSIndexPath)->[NSObject:AnyObject]? {
         var result:[NSObject:AnyObject]? = nil
         
-//        println("\n  Accessing Index: \(indexPath.row)")
+        if DEBUG { println("\n  Accessing Index: \(indexPath.row)") }
         
         var assessment = assessIndex(indexPath.row)
-//        println("Assessment: \(assessment)")
+        if DEBUG { println("Assessment: \(assessment)") }
+        
         if assessment.shouldLoadMore
         {
             var window = generateWindow(indexPath.row, isAscending: assessment.isAscending)
             var sqlVar = generateLimitOffset(assessment.isAscending, newWindowStartIndex: window.startIndex, newCount: window.count)
-//            println("Updating Results \(window) \(sqlVar)")
+            if DEBUG { println("Updating Results \(window) \(sqlVar)") }
+            
             updateResults(assessment.isAscending, limit: sqlVar.limit, offset: sqlVar.offset)
             
             loadedIndexStart = window.startIndex
         }
         
-//        printResults()
+        if DEBUG { printResults() }
         
         var index = getActualIndex(indexPath.row)
-        if index >= 0 && index < loadedResults.count-1
+        if index >= 0 && index < loadedResults.count
         {
             result = loadedResults[index]
-//            println("Object: \(result)")
+            if DEBUG { println("Object: \(result)") }
         }
         
-//        println("NEW currentIndexStart: \(loadedIndexStart) count:\(loadedResults.count)")
+        if DEBUG { println("NEW currentIndexStart: \(loadedIndexStart) count:\(loadedResults.count)") }
         
         return result
     }
@@ -372,23 +377,41 @@ public class SQLFetchedResultsController: NSObject {
         result = appendLimitClause(result, limit: limit)
         result = appendOffsetClause(result, offset: offset)
         
+        if DEBUG { println("SQL: \(result)") }
+        
         return result
     }
     
     private func getSelectFieldsClause()->String {
-        var fields = fetchRequest.fields ?? ""
-        if count(fields) == 0
-        {
-            fields = "*"
-        }
+        var fields = fetchRequest.fields ?? []
         
-        var sortFields = ""
         for descriptor in fetchRequest.sortDescriptors ?? []
         {
-            sortFields += "\(descriptor.key)"
+            var found = false
+            for f in fields
+            {
+                if f == descriptor.key
+                {
+                    found = true
+                }
+            }
+            
+            if !found {
+                fields.append(descriptor.key)
+            }
         }
         
-        return "SELECT \(fields),\(sortFields)"
+        var fieldString = ""
+        for var i=0; i < fields.count; i++
+        {
+            if i != 0 {
+                fieldString += ","
+            }
+            
+            fieldString += fields[i]
+        }
+        
+        return "SELECT \(fieldString)"
     }
     
     private func appendTableName(sql:String)->String {
@@ -526,7 +549,7 @@ public class SQLFetchedResultsController: NSObject {
     
     private func makeCountSQL()->String {
         
-        var result = "SELECT count(*) FROM (SELECT * FROM \(fetchRequest.table)"
+        var result = "SELECT count(*) FROM (SELECT \(primaryKey) FROM \(fetchRequest.table)"
         var whereClause = fetchRequest.predicate ?? ""
         if count(whereClause) > 0
         {
