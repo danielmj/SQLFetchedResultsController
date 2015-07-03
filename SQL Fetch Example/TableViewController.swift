@@ -19,9 +19,9 @@ class TableViewController: UITableViewController
         request.table = "Test" //Not tested with > 1 table
         request.fields = ["id","title"]
 //        request.predicate = "id % 100 = 0"
-        request.sortDescriptors = [(key:"title", isASC:true), (key:"subtitle", isASC:true), (key:"id", isASC:true)]
-        request.groupBy = "title"
-        request.having = "count(*) > 3"
+//        request.sortDescriptors = [(key:"title", isASC:true), (key:"subtitle", isASC:true), (key:"id", isASC:true)]
+//        request.groupBy = "title"
+//        request.having = "count(*) > 3"
         fetchController = SQLFetchedResultsController(request: request, pathToDatabase: DatabaseSetup.getDatabasePath())
         
         let preview = fetchController!.previewSQL()

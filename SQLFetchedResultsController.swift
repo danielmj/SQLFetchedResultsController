@@ -54,7 +54,7 @@ public class SQLFetchedResultsController: NSObject {
     a a 10 <- Piv
     a a 13
     
-     OFFSET = X + (SELECT count(*) FROM (SELECT id FROM Test Where $1 > a AND $2 > a id < 10 ORDER BY $1 ASC, $2 ASC, id ASC))
+     OFFSET = X + (SELECT count(*) FROM (SELECT id FROM Test Where $1 > a AND $2 > a id <= 10 ORDER BY $1 ASC, $2 ASC, id ASC))
     
     a b 2
     a b 5
@@ -72,12 +72,12 @@ public class SQLFetchedResultsController: NSObject {
     KEEP id in order by statement
     MODIFY id
     
-    OFFSET = 8 +
+    OFFSET = 8 + 4
     
 */
     
     init(request:SQLFetchRequest, pathToDatabase:String) {
-        fetchRequest = request
+        fetchRequest = request.copy() as! SQLFetchRequest
         _databasePath = pathToDatabase
         
         super.init()
@@ -91,6 +91,11 @@ public class SQLFetchedResultsController: NSObject {
         
         numberOfRows = fetchTotalRowCount()
         if DEBUG { println("ROW COUNT: \(numberOfRows)") }
+        
+        if fetchRequest.sortDescriptors.count == 0
+        {
+            fetchRequest.sortDescriptors += [(key:primaryKey,isASC:true)]
+        }
     }
     
     public func objectAt(indexPath:NSIndexPath)->[NSObject:AnyObject]? {
@@ -626,9 +631,13 @@ public class SQLFetchedResultsController: NSObject {
         var offsetAddition = ""
         if pivotResult != nil //&& false
         {
-            var table = fetchRequest.table.componentsSeparatedByString(" ")[0]
+            
             //Offsets from the duplicates
-            var duplicateOffsetSQL = "(SELECT count(*) FROM ( SELECT \(primaryKey) FROM \(table) "
+            var duplicateOffsetSQL = "(SELECT count(*) FROM ("
+            
+            duplicateOffsetSQL += getSelectFieldsClause()
+            
+            duplicateOffsetSQL += " FROM \(fetchRequest.table) "
             
             duplicateOffsetSQL = appendWhereClause(duplicateOffsetSQL, useEqualSigns:true, parameters: &parameters, pivotResult: pivotResult, isAscending: isAscending)
            

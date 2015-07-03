@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class SQLFetchRequest: NSObject {
+public class SQLFetchRequest: NSObject, NSCopying {
 
 /**
 Required. Please enter the table(s) for which you are querying. This value corresponds to [table] in the example below.
@@ -67,4 +67,19 @@ Required. Please enter the table(s) for which you are querying. This value corre
 /// 3 batches will remain in memory.This is to ensure that there is always available data to pull. 
 ///  Ensure that the batch size is large enough to cover the length of your view (or at least most of it).
     var batchSize = 15
+
+    
+    public func copyWithZone(zone: NSZone) -> AnyObject {
+        let theCopy = SQLFetchRequest()
+        
+        theCopy.table = table
+        theCopy.sortDescriptors = sortDescriptors
+        theCopy.fields = fields
+        theCopy.predicate = predicate
+        theCopy.groupBy = groupBy
+        theCopy.having = having
+        theCopy.batchSize = batchSize
+        
+        return theCopy
+    }
 }
