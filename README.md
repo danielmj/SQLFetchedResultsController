@@ -4,6 +4,8 @@ An attempt at making it easier to setup tables with SQLite. There arent many exa
 
 **WARNING** This script is still being developed. It might not always show the list correctly. Please bear with me while I get things worked out. If you want to help me address some of my Todo topics below, please do.
 
+**WARNING** I have not done any work to ensure thread safety. This is on my todo list.
+
 # How Does It Work?
 
 The class attempts to progressively load objects using the where clause and the first sort descriptor. Basically if you are ascending in the table the where clause will use sortKey >= sortValue to page the next results and if you are descending in the table the where clause will use sortKey <= sortValue to page the next results. The problem with this is duplicates. To get around this, we use the OFFSET value. Because OFFSET is inherently slow, it is better to use a sortKey that does not have that many duplicates.
@@ -11,6 +13,8 @@ The class attempts to progressively load objects using the where clause and the 
 This class also uses the table's primary key to help distinguish the tuple in a group of duplicate sorted values. The primary key is derived from the first table specified. This primary key will always be given in the resulting object.
 
 When the class detects a large jump in the table, it will set the OFFSET from the closest known value.
+
+Want to see it in action? Download the example and feel free to enable the DEBUG mode in the SQLFetchedResultsController
 
 # Requires
 
@@ -20,9 +24,11 @@ When the class detects a large jump in the table, it will set the OFFSET from th
 
 - Fix bugs with ensuring that all data appears with short tables and large tables
 - Fix bugs with group by and having fetch parameters
+- Focus on thread safety
 - Add section support
 - Add section index title support
 - Add method to jump to arbitrary location based on primary key value. This should improve the efficiency of jumping to arbitrary locations.
+- Run speed comparisons between NSFetchedResultsController and SQLFetchedResultsController
 
 # How to use
 
@@ -64,3 +70,9 @@ Then just setup the table
         return fetchController?.numberOfRows ?? 0
     }
 ```
+
+# References
+
+This is a great post, albeit outdated, about using SQLite in conjunction with a scrolling cursor. It dives into the does and donts of parsing through a large result set:
+
+http://www.sqlite.org/cvstrac/wiki?p=ScrollingCursor
