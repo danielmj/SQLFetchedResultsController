@@ -13,19 +13,17 @@
 		2E2E9DE81B422AED002EE811 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE71B422AED002EE811 /* Images.xcassets */; };
 		2E2E9DEB1B422AED002EE811 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE91B422AED002EE811 /* LaunchScreen.xib */; };
 		2E2E9DF71B422AED002EE811 /* SQL_Fetch_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9DF61B422AED002EE811 /* SQL_Fetch_ExampleTests.swift */; };
-		2E2E9E0D1B422B1B002EE811 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E031B422B1B002EE811 /* FMDatabase.m */; };
-		2E2E9E0E1B422B1B002EE811 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E051B422B1B002EE811 /* FMDatabaseAdditions.m */; };
-		2E2E9E0F1B422B1B002EE811 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E071B422B1B002EE811 /* FMDatabasePool.m */; };
-		2E2E9E101B422B1B002EE811 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E091B422B1B002EE811 /* FMDatabaseQueue.m */; };
-		2E2E9E111B422B1B002EE811 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E0C1B422B1B002EE811 /* FMResultSet.m */; };
 		2E2E9E181B422C87002EE811 /* CreateDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E171B422C87002EE811 /* CreateDataViewController.swift */; };
 		2E2E9E1C1B422FBA002EE811 /* DatabaseSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9E1B1B422FBA002EE811 /* DatabaseSetup.swift */; };
-		2E2E9E201B42351E002EE811 /* image1.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9E1D1B42351E002EE811 /* image1.png */; };
-		2E2E9E211B42351E002EE811 /* image2.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9E1E1B42351E002EE811 /* image2.png */; };
-		2E2E9E221B42351E002EE811 /* image3.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9E1F1B42351E002EE811 /* image3.png */; };
 		2E2E9E241B4238C9002EE811 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2E9E231B4238C9002EE811 /* libsqlite3.dylib */; };
-		2E44B9221B43F02B00403B91 /* SQLFetchedResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E44B9201B43F02B00403B91 /* SQLFetchedResultsController.swift */; };
-		2E44B9231B43F02B00403B91 /* SQLFetchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E44B9211B43F02B00403B91 /* SQLFetchRequest.swift */; };
+		2E43D5E41B4D5F9E008106CF /* SQLFetchedResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E43D5DF1B4D5F9E008106CF /* SQLFetchedResultsController.m */; };
+		2E43D5E51B4D5F9E008106CF /* SQLFetchRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E43D5E11B4D5F9E008106CF /* SQLFetchRequest.m */; };
+		2E43D5E61B4D5F9E008106CF /* SQLSortDescriptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E43D5E31B4D5F9E008106CF /* SQLSortDescriptor.m */; };
+		2EA4D3BF1B4D2B01008C0A16 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA4D3B51B4D2B01008C0A16 /* FMDatabase.m */; };
+		2EA4D3C01B4D2B01008C0A16 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA4D3B71B4D2B01008C0A16 /* FMDatabaseAdditions.m */; };
+		2EA4D3C11B4D2B01008C0A16 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA4D3B91B4D2B01008C0A16 /* FMDatabasePool.m */; };
+		2EA4D3C21B4D2B01008C0A16 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA4D3BB1B4D2B01008C0A16 /* FMDatabaseQueue.m */; };
+		2EA4D3C31B4D2B01008C0A16 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA4D3BE1B4D2B01008C0A16 /* FMResultSet.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,25 +48,26 @@
 		2E2E9DF51B422AED002EE811 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E2E9DF61B422AED002EE811 /* SQL_Fetch_ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQL_Fetch_ExampleTests.swift; sourceTree = "<group>"; };
 		2E2E9E011B422B1B002EE811 /* SQL Fetch Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SQL Fetch Example-Bridging-Header.h"; sourceTree = "<group>"; };
-		2E2E9E021B422B1B002EE811 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
-		2E2E9E031B422B1B002EE811 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
-		2E2E9E041B422B1B002EE811 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
-		2E2E9E051B422B1B002EE811 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
-		2E2E9E061B422B1B002EE811 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
-		2E2E9E071B422B1B002EE811 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
-		2E2E9E081B422B1B002EE811 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
-		2E2E9E091B422B1B002EE811 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
-		2E2E9E0A1B422B1B002EE811 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
-		2E2E9E0B1B422B1B002EE811 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
-		2E2E9E0C1B422B1B002EE811 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
 		2E2E9E171B422C87002EE811 /* CreateDataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateDataViewController.swift; sourceTree = "<group>"; };
 		2E2E9E1B1B422FBA002EE811 /* DatabaseSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSetup.swift; sourceTree = "<group>"; };
-		2E2E9E1D1B42351E002EE811 /* image1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image1.png; sourceTree = "<group>"; };
-		2E2E9E1E1B42351E002EE811 /* image2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image2.png; sourceTree = "<group>"; };
-		2E2E9E1F1B42351E002EE811 /* image3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image3.png; sourceTree = "<group>"; };
 		2E2E9E231B4238C9002EE811 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		2E44B9201B43F02B00403B91 /* SQLFetchedResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLFetchedResultsController.swift; sourceTree = SOURCE_ROOT; };
-		2E44B9211B43F02B00403B91 /* SQLFetchRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLFetchRequest.swift; sourceTree = SOURCE_ROOT; };
+		2E43D5DE1B4D5F9E008106CF /* SQLFetchedResultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SQLFetchedResultsController.h; path = Src/SQLFetchedResultsController.h; sourceTree = SOURCE_ROOT; };
+		2E43D5DF1B4D5F9E008106CF /* SQLFetchedResultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SQLFetchedResultsController.m; path = Src/SQLFetchedResultsController.m; sourceTree = SOURCE_ROOT; };
+		2E43D5E01B4D5F9E008106CF /* SQLFetchRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SQLFetchRequest.h; path = Src/SQLFetchRequest.h; sourceTree = SOURCE_ROOT; };
+		2E43D5E11B4D5F9E008106CF /* SQLFetchRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SQLFetchRequest.m; path = Src/SQLFetchRequest.m; sourceTree = SOURCE_ROOT; };
+		2E43D5E21B4D5F9E008106CF /* SQLSortDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SQLSortDescriptor.h; path = Src/SQLSortDescriptor.h; sourceTree = SOURCE_ROOT; };
+		2E43D5E31B4D5F9E008106CF /* SQLSortDescriptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SQLSortDescriptor.m; path = Src/SQLSortDescriptor.m; sourceTree = SOURCE_ROOT; };
+		2EA4D3B41B4D2B01008C0A16 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		2EA4D3B51B4D2B01008C0A16 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		2EA4D3B61B4D2B01008C0A16 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		2EA4D3B71B4D2B01008C0A16 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		2EA4D3B81B4D2B01008C0A16 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+		2EA4D3B91B4D2B01008C0A16 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+		2EA4D3BA1B4D2B01008C0A16 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		2EA4D3BB1B4D2B01008C0A16 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		2EA4D3BC1B4D2B01008C0A16 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
+		2EA4D3BD1B4D2B01008C0A16 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		2EA4D3BE1B4D2B01008C0A16 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,9 +119,6 @@
 				2E2E9E171B422C87002EE811 /* CreateDataViewController.swift */,
 				2E2E9DE71B422AED002EE811 /* Images.xcassets */,
 				2E2E9DE91B422AED002EE811 /* LaunchScreen.xib */,
-				2E2E9E1D1B42351E002EE811 /* image1.png */,
-				2E2E9E1E1B42351E002EE811 /* image2.png */,
-				2E2E9E1F1B42351E002EE811 /* image3.png */,
 				2E2E9DDE1B422AED002EE811 /* Supporting Files */,
 			);
 			path = "SQL Fetch Example";
@@ -153,29 +149,11 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		2E2E9E001B422AFF002EE811 /* FMDB */ = {
-			isa = PBXGroup;
-			children = (
-				2E2E9E021B422B1B002EE811 /* FMDatabase.h */,
-				2E2E9E031B422B1B002EE811 /* FMDatabase.m */,
-				2E2E9E041B422B1B002EE811 /* FMDatabaseAdditions.h */,
-				2E2E9E051B422B1B002EE811 /* FMDatabaseAdditions.m */,
-				2E2E9E061B422B1B002EE811 /* FMDatabasePool.h */,
-				2E2E9E071B422B1B002EE811 /* FMDatabasePool.m */,
-				2E2E9E081B422B1B002EE811 /* FMDatabaseQueue.h */,
-				2E2E9E091B422B1B002EE811 /* FMDatabaseQueue.m */,
-				2E2E9E0A1B422B1B002EE811 /* FMDB.h */,
-				2E2E9E0B1B422B1B002EE811 /* FMResultSet.h */,
-				2E2E9E0C1B422B1B002EE811 /* FMResultSet.m */,
-			);
-			name = FMDB;
-			sourceTree = "<group>";
-		};
 		2E2E9E121B422B2E002EE811 /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				2EA4D3B31B4D2AF9008C0A16 /* FMDB */,
 				2E44B91F1B43EDC200403B91 /* SQLFetchedResultsController */,
-				2E2E9E001B422AFF002EE811 /* FMDB */,
 				2E2E9E1B1B422FBA002EE811 /* DatabaseSetup.swift */,
 			);
 			name = Database;
@@ -184,10 +162,32 @@
 		2E44B91F1B43EDC200403B91 /* SQLFetchedResultsController */ = {
 			isa = PBXGroup;
 			children = (
-				2E44B9201B43F02B00403B91 /* SQLFetchedResultsController.swift */,
-				2E44B9211B43F02B00403B91 /* SQLFetchRequest.swift */,
+				2E43D5DE1B4D5F9E008106CF /* SQLFetchedResultsController.h */,
+				2E43D5DF1B4D5F9E008106CF /* SQLFetchedResultsController.m */,
+				2E43D5E01B4D5F9E008106CF /* SQLFetchRequest.h */,
+				2E43D5E11B4D5F9E008106CF /* SQLFetchRequest.m */,
+				2E43D5E21B4D5F9E008106CF /* SQLSortDescriptor.h */,
+				2E43D5E31B4D5F9E008106CF /* SQLSortDescriptor.m */,
 			);
 			name = SQLFetchedResultsController;
+			sourceTree = "<group>";
+		};
+		2EA4D3B31B4D2AF9008C0A16 /* FMDB */ = {
+			isa = PBXGroup;
+			children = (
+				2EA4D3B41B4D2B01008C0A16 /* FMDatabase.h */,
+				2EA4D3B51B4D2B01008C0A16 /* FMDatabase.m */,
+				2EA4D3B61B4D2B01008C0A16 /* FMDatabaseAdditions.h */,
+				2EA4D3B71B4D2B01008C0A16 /* FMDatabaseAdditions.m */,
+				2EA4D3B81B4D2B01008C0A16 /* FMDatabasePool.h */,
+				2EA4D3B91B4D2B01008C0A16 /* FMDatabasePool.m */,
+				2EA4D3BA1B4D2B01008C0A16 /* FMDatabaseQueue.h */,
+				2EA4D3BB1B4D2B01008C0A16 /* FMDatabaseQueue.m */,
+				2EA4D3BC1B4D2B01008C0A16 /* FMDB.h */,
+				2EA4D3BD1B4D2B01008C0A16 /* FMResultSet.h */,
+				2EA4D3BE1B4D2B01008C0A16 /* FMResultSet.m */,
+			);
+			name = FMDB;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,10 +271,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E2E9DE61B422AED002EE811 /* Main.storyboard in Resources */,
-				2E2E9E221B42351E002EE811 /* image3.png in Resources */,
 				2E2E9DEB1B422AED002EE811 /* LaunchScreen.xib in Resources */,
-				2E2E9E201B42351E002EE811 /* image1.png in Resources */,
-				2E2E9E211B42351E002EE811 /* image2.png in Resources */,
 				2E2E9DE81B422AED002EE811 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -293,17 +290,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E2E9E0D1B422B1B002EE811 /* FMDatabase.m in Sources */,
 				2E2E9E181B422C87002EE811 /* CreateDataViewController.swift in Sources */,
-				2E2E9E111B422B1B002EE811 /* FMResultSet.m in Sources */,
-				2E2E9E0F1B422B1B002EE811 /* FMDatabasePool.m in Sources */,
 				2E2E9DE11B422AED002EE811 /* AppDelegate.swift in Sources */,
 				2E2958741B425DB800421BF7 /* TableViewController.swift in Sources */,
-				2E2E9E0E1B422B1B002EE811 /* FMDatabaseAdditions.m in Sources */,
-				2E44B9221B43F02B00403B91 /* SQLFetchedResultsController.swift in Sources */,
-				2E2E9E101B422B1B002EE811 /* FMDatabaseQueue.m in Sources */,
+				2EA4D3BF1B4D2B01008C0A16 /* FMDatabase.m in Sources */,
+				2EA4D3C11B4D2B01008C0A16 /* FMDatabasePool.m in Sources */,
+				2E43D5E61B4D5F9E008106CF /* SQLSortDescriptor.m in Sources */,
+				2EA4D3C21B4D2B01008C0A16 /* FMDatabaseQueue.m in Sources */,
 				2E2E9E1C1B422FBA002EE811 /* DatabaseSetup.swift in Sources */,
-				2E44B9231B43F02B00403B91 /* SQLFetchRequest.swift in Sources */,
+				2EA4D3C31B4D2B01008C0A16 /* FMResultSet.m in Sources */,
+				2EA4D3C01B4D2B01008C0A16 /* FMDatabaseAdditions.m in Sources */,
+				2E43D5E51B4D5F9E008106CF /* SQLFetchRequest.m in Sources */,
+				2E43D5E41B4D5F9E008106CF /* SQLFetchedResultsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
