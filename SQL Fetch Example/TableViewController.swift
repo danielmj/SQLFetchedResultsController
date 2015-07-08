@@ -8,8 +8,9 @@
 
 import UIKit
 
-class TableViewController: UITableViewController
+class TableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
 {
+    @IBOutlet var tableView:UITableView?
     var fetchController:SQLFetchedResultsController?
     
     override func viewDidLoad() {
@@ -28,18 +29,22 @@ class TableViewController: UITableViewController
         println("--SQL Preview: \(preview.SQL) \n--Parameters: \(preview.Parameters)")
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "standard")
-        
-        var result = fetchController?.objectAt(indexPath)
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier("ReuseCell") as? UITableViewCell
+
+        if (cell == nil) {
+            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "ReuseCell")
+        }
+
+        let result = fetchController?.objectAt(indexPath)
         var id:AnyObject! = result?["id"]
         var title:AnyObject! = result?["title"]
-        cell.textLabel?.text = "\(indexPath.row).) \(id) : \(title)"
-        
-        return cell
+        cell!.textLabel?.text = "\(indexPath.row).) \(id) : \(title)"
+
+        return cell!
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return fetchController?.numberOfRows ?? 0
     }
 }

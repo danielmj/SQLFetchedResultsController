@@ -24,6 +24,7 @@ class CreateDataViewController: UIViewController {
         {
             println("[ERROR] DB not loaded. Unable to load data.")
         }
+        db?.close()
     }
     
     func loadData(database:FMDatabase)

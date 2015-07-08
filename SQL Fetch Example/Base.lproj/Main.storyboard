@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E26a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -51,7 +51,7 @@
                     </view>
                     <connections>
                         <outlet property="progressBar" destination="SBE-6i-wCx" id="Sr9-sE-7zw"/>
-                        <segue destination="m29-Xx-1xK" kind="show" identifier="showTable" id="Njj-SL-5Ca"/>
+                        <segue destination="zJa-AG-byq" kind="show" identifier="showTable" id="vLU-uy-ER7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
@@ -59,30 +59,41 @@
             <point key="canvasLocation" x="382" y="412"/>
         </scene>
         <!--Table View Controller-->
-        <scene sceneID="1WX-Uh-UWv">
+        <scene sceneID="Mdn-Sd-4kY">
             <objects>
-                <tableViewController id="m29-Xx-1xK" customClass="TableViewController" customModule="SQL_Fetch_Example" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="D9c-qZ-dlA">
+                <viewController id="zJa-AG-byq" customClass="TableViewController" customModule="SQL_Fetch_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="65Z-WV-Dm5"/>
+                        <viewControllerLayoutGuide type="bottom" id="lN6-5o-v7k"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="vet-A4-m0P">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Boo-DR-SFR">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="zJa-AG-byq" id="Kzu-24-tEo"/>
+                                    <outlet property="delegate" destination="zJa-AG-byq" id="I5d-TH-5EZ"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="NtX-Aj-Car">
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NtX-Aj-Car" id="EC6-Uk-uth">
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="m29-Xx-1xK" id="zQx-lO-KN1"/>
-                            <outlet property="delegate" destination="m29-Xx-1xK" id="FmE-2V-AGI"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="rwo-oh-BuP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Boo-DR-SFR" secondAttribute="trailing" id="60f-l5-KMg"/>
+                            <constraint firstItem="Boo-DR-SFR" firstAttribute="leading" secondItem="vet-A4-m0P" secondAttribute="leading" id="Gab-Er-yPN"/>
+                            <constraint firstItem="Boo-DR-SFR" firstAttribute="top" secondItem="vet-A4-m0P" secondAttribute="top" id="Vwz-28-s0W"/>
+                            <constraint firstItem="lN6-5o-v7k" firstAttribute="top" secondItem="Boo-DR-SFR" secondAttribute="bottom" id="Zg7-uO-WgP"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="Boo-DR-SFR" id="N1a-Dv-QFC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hpY-Zh-u1D" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1100" y="412"/>
+            <point key="canvasLocation" x="1098" y="412"/>
         </scene>
     </scenes>
 </document>

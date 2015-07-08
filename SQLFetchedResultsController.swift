@@ -101,6 +101,7 @@ public class SQLFetchedResultsController: NSObject {
     public func objectAt(indexPath:NSIndexPath)->[NSObject:AnyObject]? {
         var result:[NSObject:AnyObject]? = nil
         
+        //Clean up anything created
         if DEBUG { println("\n  Accessing Index: \(indexPath.row)") }
         
         var assessment = assessIndex(indexPath.row)
@@ -270,24 +271,27 @@ public class SQLFetchedResultsController: NSObject {
     //MARK: Update Results
     
     private func updateResults(isAscending:Bool, limit:Int, offset:Int) {
-        var pivot = getPivot(isAscending)
         
-        if offset >= bufferSize() //A JUMP!
-        {
-            //Completely replace the array
-            loadedResults = []
+        autoreleasepool { () -> () in
+            let pivot = getPivot(isAscending)
+            
+            if offset >= bufferSize() //A JUMP!
+            {
+                //Completely replace the array
+                loadedResults = []
+            }
+            else //INCREMENTAL
+            {
+                //Results adjusted at end
+            }
+            
+            var parameters:[AnyObject] = []
+            let sql = makeUpdateSQL(&parameters, pivotResult: pivot?.result, isAscending: isAscending, limit: limit, offset: offset)
+            
+            queryAndInsertIntoArray(isAscending, sql:sql, parameters:parameters)
+            
+            trimTheFat(isAscending)
         }
-        else //INCREMENTAL
-        {
-            //Results adjusted at end
-        }
-        
-        var parameters:[AnyObject] = []
-        var sql = makeUpdateSQL(&parameters, pivotResult: pivot?.result, isAscending: isAscending, limit: limit, offset: offset)
-        
-        queryAndInsertIntoArray(isAscending, sql:sql, parameters:parameters)
-        
-        trimTheFat(isAscending)
     }
     
     private func bufferSize()->Int
@@ -322,7 +326,6 @@ public class SQLFetchedResultsController: NSObject {
    
     private func queryAndInsertIntoArray(isAscending:Bool, sql:String, parameters:[AnyObject]) {
 //        println("SQL: \(sql)     ------ \(parameters)")
-        
         var queryParameters:[AnyObject]? = nil
         if parameters.count != 0
         {
@@ -333,25 +336,28 @@ public class SQLFetchedResultsController: NSObject {
         var s = db?.executeQuery(sql, withArgumentsInArray: queryParameters)
         var currentRecord = 0;
         while (s?.next() ?? false) {
-            
-            var newResult = [NSObject:AnyObject]()
-            
-            for var i:Int32 = 0; i < s!.columnCount(); i++
-            {
-                var key:String = s!.columnNameForIndex(i)
-                var value:AnyObject! = s!.objectForColumnIndex(i)
-                newResult[key] = value
-            }
-            
-            if isAscending {
-                loadedResults.append(newResult)
-            }
-            else {
-                loadedResults.insert(newResult, atIndex: 0)
-            }
-            currentRecord++
+            autoreleasepool({ () -> () in
+                
+                var newResult = [NSObject:AnyObject]()
+                
+                for var i:Int32 = 0; i < s!.columnCount(); i++
+                {
+                    var key:String = s!.columnNameForIndex(i)
+                    var value:AnyObject! = s!.objectForColumnIndex(i)
+                    newResult[key] = value
+                }
+                
+                if isAscending {
+                    loadedResults.append(newResult)
+                }
+                else {
+                    loadedResults.insert(newResult, atIndex: 0)
+                }
+                currentRecord++
+            })
         }
         db?.close()
+        db = nil
     }
     
     private func fetchTotalRowCount()->Int {
@@ -362,6 +368,7 @@ public class SQLFetchedResultsController: NSObject {
         {
             return Int(rs!.intForColumn("count(*)"))
         }
+        db?.close()
         return 0
     }
     
@@ -381,7 +388,8 @@ public class SQLFetchedResultsController: NSObject {
                 break
             }
         }
-        
+        db?.close()
+        db = nil
         return result
     }
     
@@ -393,7 +401,8 @@ public class SQLFetchedResultsController: NSObject {
         if (s?.next() ?? false) {
             result = Int(s!.intForColumnIndex(0))
         }
-        
+        db?.close()
+        db = nil
         return result
     }
     
@@ -451,14 +460,18 @@ public class SQLFetchedResultsController: NSObject {
             
             var offsetAddition = " \(duplicateOffsetSQL) ;"
             
-            var result = 0
+            var result = -1
             var db = openDatabase()
             
             var s = db?.executeQuery(offsetAddition, withArgumentsInArray: parameters)
             if (s?.next() ?? false) {
-                return Int(s!.intForColumnIndex(0))
+                result = Int(s!.intForColumnIndex(0))
             }
-            return -1
+            
+            db?.close()
+            db = nil
+            
+            return result
         }
         else
         {
@@ -566,22 +579,25 @@ public class SQLFetchedResultsController: NSObject {
             //Determine if primary key is included
             // IF FOUND, because the primary key is unique, there is no need for any other sort descriptors
             
-            var descriptorIsASC = descriptor.isASC
-            if !isAscending {
-                descriptorIsASC = !descriptorIsASC
-            }
-            
-            var direction = "DESC"
-            if descriptorIsASC {
-                direction = "ASC"
-            }
-            
-            result += " \(descriptor.key) \(direction)"
+            autoreleasepool({ () -> () in
+                var descriptorIsASC = descriptor.isASC
+                if !isAscending {
+                    descriptorIsASC = !descriptorIsASC
+                }
+                
+                var direction = "DESC"
+                if descriptorIsASC {
+                    direction = "ASC"
+                }
+                
+                result += " \(descriptor.key) \(direction)"
+            })
             
             if descriptor.key == primaryKey
             {
                 primaryKeyFound = true
                 break
+//                    i = fetchRequest.sortDescriptors.count
             }
             
             if i+1 < fetchRequest.sortDescriptors.count {
@@ -685,6 +701,7 @@ public class SQLFetchedResultsController: NSObject {
         var db = FMDatabase(path: databasePath)
         if db.open()
         {
+            db.setShouldCacheStatements(true)
             return db
         }
         return nil
@@ -714,7 +731,9 @@ public class SQLFetchedResultsController: NSObject {
         var i = 0
         for item in loadedResults
         {
-            println("\(++i). \(item)")
+            autoreleasepool({ () -> () in
+                println("\(++i). \(item)")
+            })
         }
     }
 }
