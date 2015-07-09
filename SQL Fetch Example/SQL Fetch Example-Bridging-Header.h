@@ -3,6 +3,4 @@
 //
 
 #import "FMDB.h"
-#import "SQLFetchedResultsController.h"
-#import "SQLFetchRequest.h"
-#import "SQLSortDescriptor.h"
+#import "SQLFRC.h"
