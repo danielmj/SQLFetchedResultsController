@@ -14,9 +14,36 @@ When the class detects a large jump in the table, it will set the OFFSET from th
 
 Want to see it in action? Download the example and feel free to enable the DEBUG mode in the SQLFetchedResultsController
 
-# Requires
+# Dependencies
 
 - FMDB
+- Sqlite3
+
+# Installation
+
+**If you use Cocoapods, the feel free to add the following to your podfile:**
+
+```
+pod 'SQLFetchedResultsController'
+
+# Or if you prefer:
+# pod 'SQLFetchedResultsController', '~> X.X.X'
+```
+
+**If you do not use Cocoapods, do the following:**
+
+1. Add the files within Src/ to your project
+2. Grab the latest FMDB version from: https://github.com/ccgus/fmdb
+3. Add the Sqlite3 library in your app settings
+
+**Using Swift?**
+
+Add the following to your bridging header:
+
+```
+#import "FMDB.h"
+#import "SQLFRC.h"
+```
 
 # Todo
 
