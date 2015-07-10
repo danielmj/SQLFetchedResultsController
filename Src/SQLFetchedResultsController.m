@@ -11,7 +11,7 @@
 #import "SQLFetchRequest.h"
 #import "SQLSortDescriptor.h"
 
-#define DEBUG 0
+#define SQLFRC_DEBUG 0
 #define BLOCKS_IN_MEMORY 3
 
 @interface LimitOffset : NSObject
@@ -57,7 +57,7 @@
         }
         
         numberOfRows = [self fetchTotalRowCount];
-        if(DEBUG) NSLog(@"ROW COUNT: %ld", (long)numberOfRows);
+        if(SQLFRC_DEBUG) NSLog(@"ROW COUNT: %ld", (long)numberOfRows);
         
         if(fetchRequest.sortDescriptors.count == 0)
         {
@@ -73,36 +73,36 @@
     
     NSInteger tableIndex = indexPath.row;
     
-    if(DEBUG) NSLog(@"\n");
-    if(DEBUG) NSLog(@"Accessing Index %ld", (long)indexPath.row);
+    if(SQLFRC_DEBUG) NSLog(@"\n");
+    if(SQLFRC_DEBUG) NSLog(@"Accessing Index %ld", (long)indexPath.row);
     
     BOOL isAscending = [self isAscendingAtTableIndex:tableIndex];
     BOOL shouldLoadMore = [self shouldLoadMoreAtTableIndex:tableIndex isAscending:isAscending];
     
-    if(DEBUG) NSLog(@"Assessmenet asc:%d shouldLoadMore:%d",isAscending, shouldLoadMore);
+    if(SQLFRC_DEBUG) NSLog(@"Assessmenet asc:%d shouldLoadMore:%d",isAscending, shouldLoadMore);
     
     if( shouldLoadMore )
     {
         NSRange window = [self generateWindowAtTableIndex:tableIndex isAscending:isAscending];
         LimitOffset* sqlVar = [self generateLimitOffsetWithWindow:window isAscending:isAscending];
-        if(DEBUG) NSLog(@"Updating Result Window:[%lu,%lu] Limit:%ld Offset:%ld",(unsigned long)window.location,(unsigned long)window.length, (long)sqlVar.limit, (long)sqlVar.offset);
+        if(SQLFRC_DEBUG) NSLog(@"Updating Result Window:[%lu,%lu] Limit:%ld Offset:%ld",(unsigned long)window.location,(unsigned long)window.length, (long)sqlVar.limit, (long)sqlVar.offset);
         
         [self updateResultsWithLimit:sqlVar.limit offset:sqlVar.offset isAscending:isAscending];
         
         loadedIndexStart = window.location;
     }
     
-    if(DEBUG) [self printResults];
+    if(SQLFRC_DEBUG) [self printResults];
     
     NSInteger index = [self getActualIndexAtTableIndex:tableIndex];
-    if(DEBUG) NSLog(@"Accessing Loaded Index: %ld", (long)index);
+    if(SQLFRC_DEBUG) NSLog(@"Accessing Loaded Index: %ld", (long)index);
     if(index >=0 && index < loadedResults.count)
     {
         result = loadedResults[index];
-        if(DEBUG) NSLog(@"Object: %@",result);
+        if(SQLFRC_DEBUG) NSLog(@"Object: %@",result);
     }
     
-    if(DEBUG) NSLog(@"NEW currentIndexStart: \(%ld) count:\(%lu)", (long)loadedIndexStart, (unsigned long)loadedResults.count);
+    if(SQLFRC_DEBUG) NSLog(@"NEW currentIndexStart: \(%ld) count:\(%lu)", (long)loadedIndexStart, (unsigned long)loadedResults.count);
     
     return result;
 }
@@ -199,7 +199,7 @@
     [self appendLimitToResult:&result limit:limit];
     [self appendOffsetToResult:&result parameters:parameters pivot:pivot offset:offset isAscending:isAscending];
     
-    if(DEBUG) NSLog(@"SQL: %@ Parameters: %@", result,*parameters);
+    if(SQLFRC_DEBUG) NSLog(@"SQL: %@ Parameters: %@", result,*parameters);
     
     [result appendString:@";"];
     
@@ -651,7 +651,7 @@
     [self appendHavingToResult:&result];//appendHavingClause(result)
     [result appendString:@");"];
     
-    if( DEBUG ) NSLog(@"COUNT: %@", result);
+    if( SQLFRC_DEBUG ) NSLog(@"COUNT: %@", result);
     
     return result;
 }
