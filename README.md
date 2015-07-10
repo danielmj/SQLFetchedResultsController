@@ -62,16 +62,15 @@ Initialize the fetch controller:
         super.viewDidLoad()
         
         var request = SQLFetchRequest()
-        request.table = "Test as t" //Not tested with > 1 table
-        request.fields = ["id","title", "(SELECT AVG(id) FROM Test WHERE title=t.title) as idAvg"]
-        request.predicate = "id % 10 = 0 AND title != 'SomeString'"
-        request.sortDescriptors = [(key:"title", isASC:true)]
+        request.table = "Test" //Not tested with > 1 table
+        request.fields = ["id","title"]
+        request.predicate = "id % 100 = 0"
+        request.sortDescriptors = [SQLSortDescriptor(key: "title", ascending: true)]
         request.groupBy = "title"
         request.having = "count(*) > 3"
         fetchController = SQLFetchedResultsController(request: request, pathToDatabase: DatabaseSetup.getDatabasePath())
         
-        let preview = fetchController!.previewSQL()
-        println("--SQL Preview: \(preview.SQL) \n--Parameters: \(preview.Parameters)")
+        fetchController?.previewSQL()
     }
 ```
 
