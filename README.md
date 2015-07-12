@@ -2,8 +2,6 @@
 
 An attempt at making it easier to setup tables with SQLite. There arent many examples of how to properly page through results in a database. I want to fix this. For those that enjoy the flexibility that SQL has to offer but dont want to give up the ease of setting up tables that you would get with Core Data's NSFetchedResultsController, this class is for you.
 
-**WARNING** This script is still being developed. It might not always show the list correctly. Please bear with me while I get things worked out. If you want to help me address some of my Todo topics below, please do.
-
 # How Does It Work?
 
 The class attempts to progressively load objects using the where clause and the first sort descriptor. Basically if you are ascending in the table the where clause will use sortKey >= sortValue to page the next results and if you are descending in the table the where clause will use sortKey <= sortValue to page the next results. The problem with this is duplicates. To get around this, we use the OFFSET value. Because OFFSET is inherently slow, it is better to use a sortKey that does not have that many duplicates.
