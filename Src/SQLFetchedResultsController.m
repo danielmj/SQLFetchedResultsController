@@ -10,6 +10,7 @@
 #import "SQLFetchedResultsController.h"
 #import "SQLFetchRequest.h"
 #import "SQLSortDescriptor.h"
+#import "SQLSectionInfo.h"
 
 #define SQLFRC_DEBUG 0
 #define BLOCKS_IN_MEMORY 3
@@ -27,19 +28,28 @@
     NSMutableArray* loadedResults;
     NSInteger lastTableIndex;
     NSString* primaryKey;
+    
+    NSArray* sectionIndexTitleCorrespondingSection;
+    BOOL sectionNameKeyPathIsAsc;
 }
 
+@property (readwrite, nonatomic) NSInteger numberOfRows;
 @property (readwrite, nonatomic, strong) NSString* databasePath;
 @property (readwrite, nonatomic, strong) SQLFetchRequest* fetchRequest;
+
+@property (readwrite, nonatomic) NSString *sectionNameKeyPath;
+
+@property (readwrite, nonatomic, strong) NSArray* sections;
+
+@property (readwrite, nonatomic, strong) NSArray* sectionIndexTitles;
 
 @end
 
 @implementation SQLFetchedResultsController
 
-@synthesize numberOfRows, databasePath, fetchRequest;
+@synthesize sectionNameKeyPath, fetchedObjects, numberOfRows, databasePath, fetchRequest;
 
-
-- (id)initWithRequest:(SQLFetchRequest*)request pathToDatabase:(NSString*)path
+- (id)initWithRequest:(SQLFetchRequest*)request pathToDatabase:(NSString*)path uniqueKey:(NSString*)uniqueKey sectionKey:(NSString*)keyPath;
 {
     self = [super init];
     if (self)
@@ -49,7 +59,9 @@
         loadedResults = [[NSMutableArray alloc] init];
         lastTableIndex = -1;
         loadedIndexStart = 0;
-        primaryKey = [self fetchPrimaryKey];
+        
+        primaryKey = uniqueKey;
+
         if(primaryKey.length == 0)
         {
             NSLog(@"[ERROR] Table does not include a primary key");
@@ -62,7 +74,28 @@
         if(fetchRequest.sortDescriptors.count == 0)
         {
             fetchRequest.sortDescriptors = @[[[SQLSortDescriptor alloc] initWithKey:primaryKey ascending:true]];
+            NSLog(@"Added primary key as sort descriptor");
         }
+        
+        if( keyPath == nil || keyPath.length == 0)
+        {
+            _sections = @[[[SQLSectionInfo alloc] initWithName:@"" indexTitle:@"" numberOfObjects:numberOfRows positionInTable:0]];
+            _sectionIndexTitles = @[@""];
+        }
+        else
+        {
+            if(![keyPath isEqualToString:(NSString*)[fetchRequest.sortDescriptors[0] key]])
+            {
+                NSLog(@"[WARNING] sectionKey does not match the first sort descriptor. Sections may not display correctly.");
+            }
+            
+            sectionNameKeyPath = keyPath;
+            sectionNameKeyPathIsAsc = ((SQLSortDescriptor*)fetchRequest.sortDescriptors[0]).ascending;
+            
+            [self populateSections];
+            [self populateSectionIndexTitles];
+        }
+
     }
     return self;
 }
@@ -70,8 +103,8 @@
 - (NSDictionary*)objectAtIndexPath:(NSIndexPath*)indexPath
 {
     NSDictionary* result = nil;
-    
-    NSInteger tableIndex = indexPath.row;
+
+    NSInteger tableIndex = [self tableIndexFromIndexPath:indexPath];
     
     if(SQLFRC_DEBUG) NSLog(@"\n");
     if(SQLFRC_DEBUG) NSLog(@"Accessing Index %ld", (long)indexPath.row);
@@ -107,6 +140,425 @@
     return result;
 }
 
+- (NSString*)fetchPrimaryKey
+{
+    NSString* result = nil;
+    NSString* table = [fetchRequest.table componentsSeparatedByString:@" "][0];
+    FMDatabase* db = [self openDatabase];
+    NSString* sql = [NSString stringWithFormat:@"PRAGMA table_info(%@);", table];
+    FMResultSet* rs = [db executeQuery:sql];
+    while([rs next])
+    {
+        if ([rs intForColumn:@"pk"] == 1)
+        {
+            result = [rs stringForColumn:@"name"];
+            break;
+        }
+    }
+    return result;
+}
+
+- (FMDatabase*)openDatabase
+{
+    FMDatabase* db = [[FMDatabase alloc] initWithPath:databasePath];
+    if([db open])
+    {
+        [db setShouldCacheStatements:true];
+        return db;
+    }
+    return nil;
+}
+
+#pragma mark Row Count
+
+- (NSInteger)fetchTotalRowCount
+{
+    NSInteger result = 0;
+    FMDatabase* db = [self openDatabase];
+    NSString* sql = [self makeCountSQL];
+    FMResultSet* rs = [db executeQuery:sql];
+    if ([rs next])
+    {
+        result = [rs longForColumn:@"count(*)"];
+    }
+    return result;
+}
+
+-(NSString*)makeCountSQL
+{
+    NSMutableString* result = [[NSMutableString alloc] init];
+    [result appendFormat:@"SELECT count(*) FROM (SELECT %@ FROM %@", primaryKey, fetchRequest.table];
+    NSString* whereClause = fetchRequest.predicate;
+    if ([whereClause length] > 0)
+    {
+        [result appendFormat:@" WHERE %@",whereClause];
+    }
+    [self appendGroupByToResult:&result];//appendGroupByClause(result)
+    [self appendHavingToResult:&result];//appendHavingClause(result)
+    [result appendString:@");"];
+    
+    if( SQLFRC_DEBUG ) NSLog(@"COUNT: %@", result);
+    
+    return result;
+}
+
+#pragma mark Get Fetched Objects
+
+-(NSArray*)fetchedObjects
+{
+    NSMutableArray* result = [[NSMutableArray alloc] init];
+    
+    NSString* sql = [self makeFetchAllObjectsSQL];
+    NSLog(@"GET FETCHED OBJECTS: %@",sql);
+    FMDatabase* db = [self openDatabase];
+    FMResultSet* s = [db executeQuery:sql withArgumentsInArray:nil];
+    while ([s next]) {
+        @autoreleasepool {
+            
+            NSMutableDictionary* newResult = [[NSMutableDictionary alloc] init];
+            
+            for( int i = 0; i < [s columnCount]; i++ )
+            {
+                NSString* key = [s columnNameForIndex:i];
+                id value = [s objectForColumnIndex:i];
+                newResult[key] = value;
+            }
+            
+            [result addObject:newResult];
+        }
+    }
+    [db close];
+    db = nil;
+    
+    return result;
+}
+
+- (NSString*)makeFetchAllObjectsSQL
+{
+    NSMutableString* result = nil;
+    result = [self getSelectFields];
+    [result appendFormat:@" FROM %@", fetchRequest.table];
+    NSString* whereClause = fetchRequest.predicate;
+    if ([whereClause length] > 0)
+    {
+        [result appendFormat:@" WHERE %@",whereClause];
+    }
+    
+    [self appendGroupByToResult:&result];
+    [self appendHavingToResult:&result];
+    [self appendOrderByToResult:&result isAscending:true];
+    [result appendString:@";"];
+    
+    return result;
+}
+
+#pragma mark Sections
+
+- (void)populateSections
+{
+    NSMutableArray* result = [[NSMutableArray alloc] init];
+    
+    NSString* sql = [self makeSectionSQL];
+    if(SQLFRC_DEBUG) NSLog(@"GET SECTIONs: %@",sql);
+    FMDatabase* db = [self openDatabase];
+    FMResultSet* s = [db executeQuery:sql withArgumentsInArray:nil];
+    
+    NSInteger rowPosition = 0;
+    
+    while ([s next]) {
+        @autoreleasepool {
+            
+            NSInteger rowCount = [s longForColumn:@"count13421"];
+            NSString* indexTitle = [s stringForColumn:@"indexTitle13421"];
+            
+            NSObject* sectionObject = [s objectForColumnName:sectionNameKeyPath];
+            NSString* name = [NSString stringWithFormat:@"%@", sectionObject];
+            
+            SQLSectionInfo* new = [[SQLSectionInfo alloc] initWithName:name indexTitle:indexTitle numberOfObjects:rowCount positionInTable:rowPosition];
+            if(SQLFRC_DEBUG) NSLog(@"%@ %@ %ld", indexTitle, name, (long)rowCount);
+            
+            [result addObject:new];
+            
+            rowPosition += rowCount;
+        }
+    }
+    
+    [db close];
+    db = nil;
+    
+    _sections = result;
+}
+
+- (NSString*)makeSectionSQL
+{
+    NSMutableString* result = [[NSMutableString alloc] init];
+    
+    [result appendFormat:@"SELECT %@, substr(%@,0,1) as indexTitle13421, (SELECT COUNT(*) FROM (%@)) as count13421 FROM %@ as table13421", sectionNameKeyPath, sectionNameKeyPath, [self makeSectionCountSQLWithName:@""], fetchRequest.table];
+    
+    NSString* whereClause = fetchRequest.predicate;
+    if ([whereClause length] > 0)
+    {
+        [result appendFormat:@" WHERE %@",whereClause];
+    }
+    
+    NSString* groupByString = @"";
+    if(fetchRequest.groupBy.length > 0)
+    {
+        groupByString = [NSString stringWithFormat:@", (%@)",fetchRequest.groupBy];
+    }
+    [result appendFormat:@" GROUP BY %@%@",sectionNameKeyPath,groupByString];
+    [self appendHavingToResult:&result];
+    
+    NSString* direction = @"DESC";
+    if(sectionNameKeyPathIsAsc)
+        direction = @"ASC";
+    
+    [result appendFormat:@" ORDER BY %@ %@",sectionNameKeyPath, direction];
+    [result appendString:@";"];
+    
+    return result;
+}
+
+- (NSString*)makeSectionCountSQLWithName:(NSString*)sectionName
+{
+    NSMutableString* result = nil;
+    result = [self getSelectFields];
+    [result appendFormat:@" FROM %@", fetchRequest.table];
+    NSString* whereClause = fetchRequest.predicate;
+    if ([whereClause length] > 0)
+    {
+        [result appendFormat:@" WHERE table13421.%@ == %@ AND %@", sectionNameKeyPath, sectionNameKeyPath, whereClause];
+    }
+    else
+    {
+        [result appendFormat:@" WHERE table13421.%@ == %@", sectionNameKeyPath, sectionNameKeyPath];
+    }
+    
+    [self appendGroupByToResult:&result];
+    [self appendHavingToResult:&result];
+    [self appendOrderByToResult:&result isAscending:true];
+    [result appendString:@""];
+    
+    return result;
+}
+
+#pragma mark Sections Index Paths
+
+- (void)populateSectionIndexTitles
+{
+    NSMutableArray* result = [[NSMutableArray alloc] init];
+    NSMutableArray* correspondingSections = [[NSMutableArray alloc] init];
+
+    
+    NSString* sql = [self makeSectionIndexTitleSQL];
+    if(SQLFRC_DEBUG) NSLog(@"GET SECTION INDEX TITLES: %@",sql);
+    FMDatabase* db = [self openDatabase];
+    FMResultSet* s = [db executeQuery:sql withArgumentsInArray:nil];
+    
+    NSInteger currentSection = 0;
+    
+    while ([s next]) {
+        @autoreleasepool {
+            
+            NSInteger sectionCount = [s longForColumn:@"count13425"];
+            NSString* indexTitle = [s objectForColumnName:@"indexTitle13425"];
+            
+            if(SQLFRC_DEBUG) NSLog(@"%@ %ld", indexTitle, (long)currentSection);
+            
+            [result addObject:indexTitle];
+            [correspondingSections addObject:[NSNumber numberWithInteger:currentSection]];
+            
+            currentSection += sectionCount;
+        }
+    }
+    
+    [db close];
+    db = nil;
+    
+    _sectionIndexTitles = result;
+    sectionIndexTitleCorrespondingSection = correspondingSections;
+}
+
+- (NSString*)makeSectionIndexTitleSQL
+{
+    NSMutableString* result = [[NSMutableString alloc] init];
+    
+    // Remove Semicolon
+    NSString* sectionSQL = [[self makeSectionSQL] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if([sectionSQL characterAtIndex:sectionSQL.length-1] == ';')
+    {
+        sectionSQL = [sectionSQL substringToIndex:sectionSQL.length-1];
+    }
+    
+    [result appendFormat:@"SELECT substr(%@,0,1) as indexTitle13425, COUNT(*) as count13425 FROM (%@)", sectionNameKeyPath, sectionSQL];
+    
+    [result appendFormat:@" GROUP BY indexTitle13425"];
+    
+    NSString* direction = @"DESC";
+    if(sectionNameKeyPathIsAsc)
+        direction = @"ASC";
+    [result appendFormat:@" ORDER BY indexTitle13425 %@",direction];
+    [result appendString:@";"];
+    
+    return result;
+}
+
+- (NSInteger)sectionForSectionIndexTitle:(NSString*)title atIndex:(NSInteger)index
+{
+    return [sectionIndexTitleCorrespondingSection[index] integerValue];
+}
+
+#pragma mark Determine Next Cache Window
+
+- (BOOL)isAscendingAtTableIndex:(NSInteger)tableIndex
+{
+    BOOL result = false;
+    
+    if( tableIndex > lastTableIndex ) {
+        result = true;
+    }
+    else {
+        result = false;
+    }
+    lastTableIndex = tableIndex;
+    
+    return result;
+}
+
+- (BOOL)shouldLoadMoreAtTableIndex:(NSInteger)tableIndex isAscending:(BOOL)isAscending
+{
+    BOOL result = false;
+    
+    NSInteger maxResultCount = BLOCKS_IN_MEMORY * fetchRequest.batchSize;
+    NSInteger inset = (NSInteger)((double)maxResultCount/3.0);
+    NSInteger currentIndex = [self getActualIndexAtTableIndex:tableIndex];
+    if( currentIndex < inset && !isAscending )
+    {
+        result = true;
+    }
+    else if( currentIndex > (NSInteger)((loadedResults.count)-inset+1) && isAscending )
+    {
+        result = true;
+    }
+    
+    return result;
+}
+
+- (NSRange)generateWindowAtTableIndex:(NSInteger)tableIndex isAscending:(BOOL)isAscending
+{
+    NSInteger start = 0;
+    NSInteger count = 0;
+    
+    if (isAscending)
+    {
+        count = fetchRequest.batchSize * BLOCKS_IN_MEMORY;
+        start = tableIndex - (count / 3);
+    }
+    else
+    {
+        count = fetchRequest.batchSize * BLOCKS_IN_MEMORY;
+        start = tableIndex - (count * 2 / 3);
+    }
+    
+    if (start+count > numberOfRows)
+    {
+        count = fetchRequest.batchSize * BLOCKS_IN_MEMORY;
+        start = numberOfRows - count;
+    }
+    
+    if (start < 0)
+    {
+        count = fetchRequest.batchSize * BLOCKS_IN_MEMORY;
+        start = 0;
+    }
+    
+    return NSMakeRange(start, count);
+}
+
+- (LimitOffset*)generateLimitOffsetWithWindow:(NSRange)window isAscending:(BOOL)isAscending
+{
+    LimitOffset* result = [[LimitOffset alloc] init];
+    
+    NSInteger startIndex = window.location;
+    NSInteger count = window.length;
+    
+    NSInteger pivotIndex = [self getPivotIndexIsAscending:isAscending];
+    
+    if(isAscending)
+    {
+        NSInteger distanceToWindow = (startIndex - pivotIndex);
+        if( distanceToWindow > 0 )
+        {
+            result.offset = distanceToWindow;
+            result.limit = count;
+        }
+        else //If window start alread is loaded
+        {
+            result.offset = 0;
+            result.limit = count - labs(distanceToWindow);
+        }
+    }
+    else //DESC
+    {
+        NSInteger topOfWindow = (startIndex+count);
+        NSInteger distanceToWindow = pivotIndex - topOfWindow;
+        if( distanceToWindow > 0 )
+        {
+            result.offset = distanceToWindow;
+            result.limit = count;
+        }
+        else //If window start alread is loaded
+        {
+            result.offset = 0;
+            result.limit = count - ABS(distanceToWindow);
+        }
+    }
+    
+    return result;
+}
+
+- (NSInteger)getActualIndexAtTableIndex:(NSInteger)tableIndex
+{
+    return tableIndex - loadedIndexStart;
+}
+
+- (NSInteger)getPivotIndexIsAscending:(BOOL)isAscending
+{
+    NSInteger result = 0;
+    if( loadedResults.count > 0 )
+    {
+        if( isAscending )
+        {
+            result = loadedIndexStart+loadedResults.count;
+        }
+        else
+        {
+            result = loadedIndexStart;
+        }
+    }
+    return result;
+}
+
+- (NSDictionary*)getPivotIsAscending:(BOOL)isAscending
+{
+    NSDictionary* result = nil;
+    
+    if( loadedResults.count > 0 )
+    {
+        if( isAscending )
+        {
+            result = loadedResults[loadedResults.count-1];
+        }
+        else
+        {
+            result = loadedResults[0];
+        }
+    }
+    return result;
+}
+
+#pragma mark Update Cached Results
+
 - (void)updateResultsWithLimit:(NSInteger)limit offset:(NSInteger)offset isAscending:(BOOL)isAscending
 {
     NSDictionary* pivot = [self getPivotIsAscending:isAscending];
@@ -123,29 +575,6 @@
     [self queryAndAppendWithSQL:(NSString*)sql parameters:(NSMutableArray*)parameters isAscending:(BOOL)isAscending];
     
     [self trimTheFatIsAscending:(BOOL)isAscending];
-}
-
-- (void)trimTheFatIsAscending:(BOOL)isAscending
-{
-    NSInteger totalResultsAllowed = fetchRequest.batchSize * BLOCKS_IN_MEMORY;
-    NSInteger difference = loadedResults.count - totalResultsAllowed;
-    if( difference > 0 )
-    {
-        if( isAscending )
-        {
-            for( int i=0; i < difference; i++ )
-            {
-                [loadedResults removeObjectAtIndex:0];
-            }
-        }
-        else
-        {
-            for( int i=0; i < difference; i++ )
-            {
-                [loadedResults removeObjectAtIndex:loadedResults.count-1];
-            }
-        }
-    }
 }
 
 - (void)queryAndAppendWithSQL:(NSString*)sql parameters:(NSMutableArray*)parameters isAscending:(BOOL)isAscending
@@ -184,6 +613,31 @@
     db = nil;
 }
 
+- (void)trimTheFatIsAscending:(BOOL)isAscending
+{
+    NSInteger totalResultsAllowed = fetchRequest.batchSize * BLOCKS_IN_MEMORY;
+    NSInteger difference = loadedResults.count - totalResultsAllowed;
+    if( difference > 0 )
+    {
+        if( isAscending )
+        {
+            for( int i=0; i < difference; i++ )
+            {
+                [loadedResults removeObjectAtIndex:0];
+            }
+        }
+        else
+        {
+            for( int i=0; i < difference; i++ )
+            {
+                [loadedResults removeObjectAtIndex:loadedResults.count-1];
+            }
+        }
+    }
+}
+
+#pragma mark SQL Expression Factory
+
 - (NSString*)makeUpdateSQLWithParameters:(NSMutableArray**)parameters pivot:(NSDictionary*)pivot
                              isAscending:(BOOL)isAscending limit:(NSInteger)limit
                                   offset:(NSInteger)offset
@@ -218,7 +672,7 @@
         [duplicateOffsetSQL appendString:[self getSelectFields]];
         
         [duplicateOffsetSQL appendFormat:@" FROM %@ ",fetchRequest.table];
-
+        
         [self appendWhereToResult:&duplicateOffsetSQL useEqualSign:true parameters:parameters pivot:pivot isAscending:isAscending];
         
         //Reverse to query only results between start of duplicates and current
@@ -240,9 +694,9 @@
             [duplicateOffsetSQL appendFormat:@" AND %@",reverseCondition];
         }
         
-        [self appendOrderByToResult:&duplicateOffsetSQL isAscending:isAscending];
         [self appendGroupByToResult:&duplicateOffsetSQL];
         [self appendHavingToResult:&duplicateOffsetSQL];
+        [self appendOrderByToResult:&duplicateOffsetSQL isAscending:isAscending];
         
         [duplicateOffsetSQL appendString:@" ))"];
         
@@ -355,8 +809,14 @@
             NSString* directionStatement = @"=";
             if( !useEqualSigns )
             {
+                
+                BOOL descriptorIsASC = descriptor.ascending;
+                if( !isAscending ) {
+                    descriptorIsASC = !descriptorIsASC;
+                }
+                
                 directionStatement = @"<=";
-                if( isAscending ) {
+                if( descriptorIsASC ) {
                     directionStatement = @">=";
                 }
             }
@@ -429,9 +889,11 @@
     return fieldString;
 }
 
-- (NSInteger)getActualIndexAtTableIndex:(NSInteger)tableIndex
+#pragma mark Additional Methods
+
+- (NSInteger)tableIndexFromIndexPath:(NSIndexPath*)path
 {
-    return tableIndex - loadedIndexStart;
+    return [(SQLSectionInfo*)[_sections objectAtIndex:path.section] positionInTable] + path.row;
 }
 
 - (void)previewSQL
@@ -446,215 +908,14 @@
     for( NSDictionary* item in loadedResults )
     {
         @autoreleasepool {
-            NSLog(@"%d. %@", ++i, item);
+            NSMutableString* str = [[NSMutableString alloc] init];
+            for( NSString* key in item)
+            {
+                [str appendFormat:@"[\"%@\":%@], ",key, item[key]];
+            }
+            NSLog(@"%d. %@", ++i, str);
         }
     }
 }
-
-- (NSRange)generateWindowAtTableIndex:(NSInteger)tableIndex isAscending:(BOOL)isAscending
-{
-    NSInteger start = 0;
-    NSInteger count = 0;
-    
-    if (isAscending)
-    {
-        count = fetchRequest.batchSize * BLOCKS_IN_MEMORY;
-        start = tableIndex - (count / 3);
-    }
-    else
-    {
-        count = fetchRequest.batchSize * BLOCKS_IN_MEMORY;
-        start = tableIndex - (count * 2 / 3);
-    }
-    
-    if (start+count > numberOfRows)
-    {
-        count = fetchRequest.batchSize * BLOCKS_IN_MEMORY;
-        start = numberOfRows - count;
-    }
-    
-    if (start < 0)
-    {
-        count = fetchRequest.batchSize * BLOCKS_IN_MEMORY;
-        start = 0;
-    }
-    
-    return NSMakeRange(start, count);
-}
-
-
-- (LimitOffset*)generateLimitOffsetWithWindow:(NSRange)window isAscending:(BOOL)isAscending
-{
-    LimitOffset* result = [[LimitOffset alloc] init];
-    
-    NSInteger startIndex = window.location;
-    NSInteger count = window.length;
-    
-    NSInteger pivotIndex = [self getPivotIndexIsAscending:isAscending];
-    
-    if(isAscending)
-    {
-        NSInteger distanceToWindow = (startIndex - pivotIndex);
-        if( distanceToWindow > 0 )
-        {
-            result.offset = distanceToWindow;
-            result.limit = count;
-        }
-        else //If window start alread is loaded
-        {
-            result.offset = 0;
-            result.limit = count - labs(distanceToWindow);
-        }
-    }
-    else //DESC
-    {
-        NSInteger topOfWindow = (startIndex+count);
-        NSInteger distanceToWindow = pivotIndex - topOfWindow;
-        if( distanceToWindow > 0 )
-        {
-            result.offset = distanceToWindow;
-            result.limit = count;
-        }
-        else //If window start alread is loaded
-        {
-            result.offset = 0;
-            result.limit = count - ABS(distanceToWindow);
-        }
-    }
-    
-    return result;
-}
-
-
-- (NSInteger)getPivotIndexIsAscending:(BOOL)isAscending
-{
-    NSInteger result = 0;
-    if( loadedResults.count > 0 )
-    {
-        if( isAscending )
-        {
-            result = loadedIndexStart+loadedResults.count;
-        }
-        else
-        {
-            result = loadedIndexStart;
-        }
-    }
-    return result;
-}
-
-- (NSDictionary*)getPivotIsAscending:(BOOL)isAscending
-{
-    NSDictionary* result = nil;
-    
-    if( loadedResults.count > 0 )
-    {
-        if( isAscending )
-        {
-            result = loadedResults[loadedResults.count-1];
-        }
-        else
-        {
-            result = loadedResults[0];
-        }
-    }
-    return result;
-}
-
-
-- (BOOL)shouldLoadMoreAtTableIndex:(NSInteger)tableIndex isAscending:(BOOL)isAscending
-{
-    BOOL result = false;
-    
-    NSInteger maxResultCount = BLOCKS_IN_MEMORY * fetchRequest.batchSize;
-    NSInteger inset = (NSInteger)((double)maxResultCount/3.0);
-    NSInteger currentIndex = [self getActualIndexAtTableIndex:tableIndex];
-    if( currentIndex < inset && !isAscending )
-    {
-        result = true;
-    }
-    else if( currentIndex > (NSInteger)((loadedResults.count)-inset+1) && isAscending )
-    {
-        result = true;
-    }
-    
-    return result;
-}
-
-- (BOOL)isAscendingAtTableIndex:(NSInteger)tableIndex
-{
-    BOOL result = false;
-    
-    if( tableIndex > lastTableIndex ) {
-        result = true;
-    }
-    else {
-        result = false;
-    }
-    lastTableIndex = tableIndex;
-    
-    return result;
-}
-
-- (NSInteger)fetchTotalRowCount
-{
-    NSInteger result = 0;
-    FMDatabase* db = [self openDatabase];
-    NSString* sql = [self makeCountSQL];
-    FMResultSet* rs = [db executeQuery:sql];
-    if ([rs next])
-    {
-        result = [rs longForColumn:@"count(*)"];
-    }
-    return result;
-}
-
-- (NSString*)fetchPrimaryKey
-{
-    NSString* result = nil;
-    NSString* table = [fetchRequest.table componentsSeparatedByString:@" "][0];
-    FMDatabase* db = [self openDatabase];
-    NSString* sql = [NSString stringWithFormat:@"PRAGMA table_info(%@);", table];
-    FMResultSet* rs = [db executeQuery:sql];
-    while([rs next])
-    {
-        if ([rs intForColumn:@"pk"] == 1)
-        {
-            result = [rs stringForColumn:@"name"];
-            break;
-        }
-    }
-    return result;
-}
-
-- (FMDatabase*)openDatabase
-{
-    FMDatabase* db = [[FMDatabase alloc] initWithPath:databasePath];
-    if([db open])
-    {
-        [db setShouldCacheStatements:true];
-        return db;
-    }
-    return nil;
-}
-
--(NSString*)makeCountSQL
-{
-    NSMutableString* result = [[NSMutableString alloc] init];
-    [result appendFormat:@"SELECT count(*) FROM (SELECT %@ FROM %@", primaryKey, fetchRequest.table];
-    NSString* whereClause = fetchRequest.predicate;
-    if ([whereClause length] > 0)
-    {
-        [result appendFormat:@" WHERE %@",whereClause];
-    }
-    [self appendGroupByToResult:&result];//appendGroupByClause(result)
-    [self appendHavingToResult:&result];//appendHavingClause(result)
-    [result appendString:@");"];
-    
-    if( SQLFRC_DEBUG ) NSLog(@"COUNT: %@", result);
-    
-    return result;
-}
-
 
 @end
