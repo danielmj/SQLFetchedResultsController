@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E0DE7CC1B54C915005657EF /* SQLSectionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E0DE7CB1B54C915005657EF /* SQLSectionInfo.m */; };
 		2E2958741B425DB800421BF7 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2958731B425DB800421BF7 /* TableViewController.swift */; };
 		2E2E9DE11B422AED002EE811 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE01B422AED002EE811 /* AppDelegate.swift */; };
 		2E2E9DE61B422AED002EE811 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE41B422AED002EE811 /* Main.storyboard */; };
@@ -37,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2E0DE7CA1B54C915005657EF /* SQLSectionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SQLSectionInfo.h; path = Src/SQLSectionInfo.h; sourceTree = SOURCE_ROOT; };
+		2E0DE7CB1B54C915005657EF /* SQLSectionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SQLSectionInfo.m; path = Src/SQLSectionInfo.m; sourceTree = SOURCE_ROOT; };
 		2E2958731B425DB800421BF7 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		2E2E9DDB1B422AED002EE811 /* SQL Fetch Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SQL Fetch Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E2E9DDF1B422AED002EE811 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -170,6 +173,8 @@
 				2E43D5E11B4D5F9E008106CF /* SQLFetchRequest.m */,
 				2E43D5E21B4D5F9E008106CF /* SQLSortDescriptor.h */,
 				2E43D5E31B4D5F9E008106CF /* SQLSortDescriptor.m */,
+				2E0DE7CA1B54C915005657EF /* SQLSectionInfo.h */,
+				2E0DE7CB1B54C915005657EF /* SQLSectionInfo.m */,
 			);
 			name = SQLFetchedResultsController;
 			sourceTree = "<group>";
@@ -294,6 +299,7 @@
 			files = (
 				2E2E9E181B422C87002EE811 /* CreateDataViewController.swift in Sources */,
 				2E2E9DE11B422AED002EE811 /* AppDelegate.swift in Sources */,
+				2E0DE7CC1B54C915005657EF /* SQLSectionInfo.m in Sources */,
 				2E2958741B425DB800421BF7 /* TableViewController.swift in Sources */,
 				2EA4D3BF1B4D2B01008C0A16 /* FMDatabase.m in Sources */,
 				2EA4D3C11B4D2B01008C0A16 /* FMDatabasePool.m in Sources */,

@@ -17,15 +17,27 @@ class TableViewController: UIViewController, UITableViewDataSource, UITableViewD
         super.viewDidLoad()
         
         var request = SQLFetchRequest()
-        request.table = "Test" //Not tested with > 1 table
+        request.table = "(SELECT id, title FROM Test)" // Do not use > 1 table or sql expression
         request.fields = ["id","title"]
-//        request.predicate = "id % 100 = 0"
-        request.sortDescriptors = [SQLSortDescriptor(key: "title", ascending: true)]
+        request.predicate = "id % 100 = 0"
+        request.sortDescriptors = [SQLSortDescriptor(key: "cast(id as text)", ascending: true)] //Sort id like a string
 //        request.groupBy = "title"
 //        request.having = "count(*) > 3"
-        fetchController = SQLFetchedResultsController(request: request, pathToDatabase: DatabaseSetup.getDatabasePath())
+        fetchController = SQLFetchedResultsController(request: request, pathToDatabase: DatabaseSetup.getDatabasePath(), uniqueKey:"id", sectionKey: "id")
         
         fetchController?.previewSQL()
+    }
+    
+    func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
+        return fetchController?.sectionIndexTitles ?? [];
+    }
+    
+    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+        return fetchController?.sectionForSectionIndexTitle(title, atIndex: index) ?? 0
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return fetchController?.sections.count ?? 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -38,12 +50,12 @@ class TableViewController: UIViewController, UITableViewDataSource, UITableViewD
         let result = fetchController?.objectAtIndexPath(indexPath)
         var id:AnyObject! = result?["id"]
         var title:AnyObject! = result?["title"]
-        cell!.textLabel?.text = "\(indexPath.row).) \(id) : \(title)"
+        cell!.textLabel?.text = "\(id) : \(title)"
 
         return cell!
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return fetchController?.numberOfRows ?? 0
+        return (fetchController?.sections[section] as? SQLSectionInfo)?.numberOfObjects ?? 0
     }
 }

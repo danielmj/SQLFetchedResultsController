@@ -14,6 +14,8 @@
 /**
  Required. Please enter the table(s) for which you are querying. This value corresponds to [table] in the example below.
  
+ WARNING: Must only use 1 table or expression.
+ 
  SELECT * FROM [table] WHERE ...
  */
 @property (nonatomic, strong) NSString* table;
@@ -39,9 +41,9 @@
  
  ... WHERE [predicate] ...
  
- **Example:**  predicate = "Date='062915' AND id=103"
+ **Example:**  fetchRequest.predicate = @"Date='062915' AND id=103"
  
- **Example:**  predicate = "Date='062915' AND id=(SELECT id FROM Users WHERE email='test@domain.com')"
+ **Example:**  fetchRequest.predicate = @"Date='062915' AND id=(SELECT id FROM Users WHERE email='test@domain.com')"
  */
 @property (nonatomic, strong) NSString* predicate;
 
@@ -51,7 +53,7 @@
  
  ... GROUP BY [groupBy] ...
  
- **Example:**  groupBy = "title"
+ **Example:**  fetchRequest.groupBy = @"title"
  */
 @property (nonatomic, strong) NSString* groupBy;
 
@@ -60,7 +62,7 @@
  
  ... HAVING [having] ...
  
- **Example:**  having = "COUNT(*) > 2"
+ **Example:**  fetchRequest.having = @"COUNT(*) > 2"
  */
 @property (nonatomic, strong) NSString* having;
 

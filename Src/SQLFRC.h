@@ -9,3 +9,4 @@
 #import "SQLFetchedResultsController.h"
 #import "SQLFetchRequest.h"
 #import "SQLSortDescriptor.h"
+#import "SQLSectionInfo.h"

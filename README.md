@@ -59,14 +59,16 @@ Initialize the fetch controller:
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        var request = SQLFetchRequest()
-        request.table = "Test" //Not tested with > 1 table
-        request.fields = ["id","title"]
-        request.predicate = "id % 100 = 0"
-        request.sortDescriptors = [SQLSortDescriptor(key: "title", ascending: true)]
-        request.groupBy = "title"
-        request.having = "count(*) > 3"
-        fetchController = SQLFetchedResultsController(request: request, pathToDatabase: DatabaseSetup.getDatabasePath())
+    var request = SQLFetchRequest()
+    request.table = "(SELECT id, title FROM Test)" // Do not use > 1 table or sql expression
+    //        request.table = "Test"
+    request.fields = ["id","title"]
+    request.predicate = "id % 100 = 0"
+    request.sortDescriptors = [SQLSortDescriptor(key: "cast(id as text)", ascending: true)] //Sort the id like text.
+    //        request.sortDescriptors = [SQLSortDescriptor(key: "title", ascending: true)]
+    //        request.groupBy = "title"
+    //        request.having = "count(*) > 3"
+    fetchController = SQLFetchedResultsController(request: request, pathToDatabase: DatabaseSetup.getDatabasePath(), uniqueKey:"id", sectionKey: "id")
         
         fetchController?.previewSQL()
     }
