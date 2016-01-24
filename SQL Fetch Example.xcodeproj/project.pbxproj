@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2E0DE7CC1B54C915005657EF /* SQLSectionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E0DE7CB1B54C915005657EF /* SQLSectionInfo.m */; };
-		2E2958741B425DB800421BF7 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2958731B425DB800421BF7 /* TableViewController.swift */; };
+		2E2958741B425DB800421BF7 /* TableViewController_SwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2958731B425DB800421BF7 /* TableViewController_SwiftVersion.swift */; };
 		2E2E9DE11B422AED002EE811 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE01B422AED002EE811 /* AppDelegate.swift */; };
 		2E2E9DE61B422AED002EE811 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE41B422AED002EE811 /* Main.storyboard */; };
 		2E2E9DE81B422AED002EE811 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E9DE71B422AED002EE811 /* Images.xcassets */; };
@@ -25,6 +25,7 @@
 		2EA4D3C11B4D2B01008C0A16 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA4D3B91B4D2B01008C0A16 /* FMDatabasePool.m */; };
 		2EA4D3C21B4D2B01008C0A16 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA4D3BB1B4D2B01008C0A16 /* FMDatabaseQueue.m */; };
 		2EA4D3C31B4D2B01008C0A16 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA4D3BE1B4D2B01008C0A16 /* FMResultSet.m */; };
+		2EE26EB11C5572000072C067 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE26EB01C5572000072C067 /* TableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +41,7 @@
 /* Begin PBXFileReference section */
 		2E0DE7CA1B54C915005657EF /* SQLSectionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SQLSectionInfo.h; path = Src/SQLSectionInfo.h; sourceTree = SOURCE_ROOT; };
 		2E0DE7CB1B54C915005657EF /* SQLSectionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SQLSectionInfo.m; path = Src/SQLSectionInfo.m; sourceTree = SOURCE_ROOT; };
-		2E2958731B425DB800421BF7 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		2E2958731B425DB800421BF7 /* TableViewController_SwiftVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController_SwiftVersion.swift; sourceTree = "<group>"; };
 		2E2E9DDB1B422AED002EE811 /* SQL Fetch Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SQL Fetch Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E2E9DDF1B422AED002EE811 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E2E9DE01B422AED002EE811 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -72,6 +73,8 @@
 		2EA4D3BC1B4D2B01008C0A16 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
 		2EA4D3BD1B4D2B01008C0A16 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
 		2EA4D3BE1B4D2B01008C0A16 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		2EE26EAF1C5572000072C067 /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewController.h; sourceTree = "<group>"; };
+		2EE26EB01C5572000072C067 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,7 +122,9 @@
 				2E2E9E011B422B1B002EE811 /* SQL Fetch Example-Bridging-Header.h */,
 				2E2E9DE01B422AED002EE811 /* AppDelegate.swift */,
 				2E2E9DE41B422AED002EE811 /* Main.storyboard */,
-				2E2958731B425DB800421BF7 /* TableViewController.swift */,
+				2EE26EAF1C5572000072C067 /* TableViewController.h */,
+				2EE26EB01C5572000072C067 /* TableViewController.m */,
+				2E2958731B425DB800421BF7 /* TableViewController_SwiftVersion.swift */,
 				2E2E9E171B422C87002EE811 /* CreateDataViewController.swift */,
 				2E2E9DE71B422AED002EE811 /* Images.xcassets */,
 				2E2E9DE91B422AED002EE811 /* LaunchScreen.xib */,
@@ -302,8 +307,9 @@
 				2E2E9E181B422C87002EE811 /* CreateDataViewController.swift in Sources */,
 				2E2E9DE11B422AED002EE811 /* AppDelegate.swift in Sources */,
 				2E0DE7CC1B54C915005657EF /* SQLSectionInfo.m in Sources */,
-				2E2958741B425DB800421BF7 /* TableViewController.swift in Sources */,
+				2E2958741B425DB800421BF7 /* TableViewController_SwiftVersion.swift in Sources */,
 				2EA4D3BF1B4D2B01008C0A16 /* FMDatabase.m in Sources */,
+				2EE26EB11C5572000072C067 /* TableViewController.m in Sources */,
 				2EA4D3C11B4D2B01008C0A16 /* FMDatabasePool.m in Sources */,
 				2E43D5E61B4D5F9E008106CF /* SQLSortDescriptor.m in Sources */,
 				2EA4D3C21B4D2B01008C0A16 /* FMDatabaseQueue.m in Sources */,

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
+class TableViewController_SwiftVersion: UIViewController, UITableViewDataSource, UITableViewDelegate
 {
     @IBOutlet var tableView:UITableView?
     var fetchController:SQLFetchedResultsController?
@@ -29,7 +29,7 @@ class TableViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]! {
-        return fetchController?.sectionIndexTitles ?? [];
+        return (fetchController?.sectionIndexTitles as? [String]) ?? [];
     }
     
     func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
@@ -41,15 +41,15 @@ class TableViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier("ReuseCell") as? UITableViewCell
+        var cell = tableView.dequeueReusableCellWithIdentifier("ReuseCell")
 
         if (cell == nil) {
             cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "ReuseCell")
         }
 
         let result = fetchController?.objectAtIndexPath(indexPath)
-        var id:AnyObject! = result?["id"]
-        var title:AnyObject! = result?["title"]
+        let id:AnyObject! = result?["id"]
+        let title:AnyObject! = result?["title"]
         cell!.textLabel?.text = "\(id) : \(title)"
 
         return cell!
