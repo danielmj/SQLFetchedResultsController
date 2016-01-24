@@ -22,7 +22,7 @@ class CreateDataViewController: UIViewController {
         }
         else
         {
-            println("[ERROR] DB not loaded. Unable to load data.")
+            print("[ERROR] DB not loaded. Unable to load data.")
         }
         db?.close()
     }
@@ -37,7 +37,7 @@ class CreateDataViewController: UIViewController {
             
             if progress == 1.0
             {
-                println("Finished Inserting Data")
+                print("Finished Inserting Data")
                 self.presentDataTable()
             }
         }

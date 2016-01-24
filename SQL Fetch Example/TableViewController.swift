@@ -16,7 +16,7 @@ class TableViewController: UIViewController, UITableViewDataSource, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        var request = SQLFetchRequest()
+        let request = SQLFetchRequest()
         request.table = "(SELECT id, title FROM Test)" // Do not use > 1 table or sql expression
         request.fields = ["id","title"]
         request.predicate = "id % 100 = 0"
@@ -28,7 +28,7 @@ class TableViewController: UIViewController, UITableViewDataSource, UITableViewD
         fetchController?.previewSQL()
     }
     
-    func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
+    func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]! {
         return fetchController?.sectionIndexTitles ?? [];
     }
     

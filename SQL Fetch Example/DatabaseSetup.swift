@@ -17,15 +17,15 @@ public class DatabaseSetup: NSObject {
             deleteDatabase()
         }
         
-        var db = FMDatabase(path: getDatabasePath())
+        let db = FMDatabase(path: getDatabasePath())
         if db.open()
         {
-            println("Creating Database")
+            print("Creating Database")
             create(db)
             return db
         }
         
-        println("DATABASE ERROR: Could not recreate databse!")
+        print("DATABASE ERROR: Could not recreate databse!")
         return nil
     }
     
@@ -43,9 +43,9 @@ public class DatabaseSetup: NSObject {
                 let progressDenom = (Double(total) * percentToAdvance)
                 NSLog("Beginning Enqueuing")
                 
-                var sql1 = "INSERT INTO Test (title, subtitle, imageLink) VALUES ('Beach Pic', 'The sun sets on the beach', 'image1.png');"
-                var sql2 = "INSERT INTO Test (title, subtitle, imageLink) VALUES ('Wave Pic #1', 'A cool picture of a wave from a distance', 'image2.png');"
-                var sql3 = "INSERT INTO Test (title, subtitle, imageLink) VALUES ('Wave Pic #2', 'A cool picture of a wave at sunset', 'image3.png');"
+                let sql1 = "INSERT INTO Test (title, subtitle, imageLink) VALUES ('Beach Pic', 'The sun sets on the beach', 'image1.png');"
+                let sql2 = "INSERT INTO Test (title, subtitle, imageLink) VALUES ('Wave Pic #1', 'A cool picture of a wave from a distance', 'image2.png');"
+                let sql3 = "INSERT INTO Test (title, subtitle, imageLink) VALUES ('Wave Pic #2', 'A cool picture of a wave at sunset', 'image3.png');"
                 
                 for var i=0; i < total; i++
                 {
@@ -78,7 +78,7 @@ public class DatabaseSetup: NSObject {
     
     public class func getDatabasePath()->String
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as! NSString
+        let documentsPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as NSString
         let path = documentsPath.stringByAppendingPathComponent("database.sqlite")
         
         return path
@@ -92,10 +92,14 @@ public class DatabaseSetup: NSObject {
     public class func deleteDatabase()
     {
         var error:NSError? = nil
-        NSFileManager.defaultManager().removeItemAtPath(getDatabasePath(), error: &error)
+        do {
+            try NSFileManager.defaultManager().removeItemAtPath(getDatabasePath())
+        } catch let error1 as NSError {
+            error = error1
+        }
         if error != nil
         {
-            println("[ERROR] Could not delete database. \(error?.localizedDescription)")
+            print("[ERROR] Could not delete database. \(error?.localizedDescription)")
         }
     }
     
@@ -110,7 +114,7 @@ public class DatabaseSetup: NSObject {
                     let title = rs.stringForColumn("title")
                     let subtitle = rs.stringForColumn("subtitle")
                     let imageLink = rs.stringForColumn("imageLink")
-                    println("Title=\(title) Subtitle=\(subtitle) Image=\(imageLink)")
+                    print("Title=\(title) Subtitle=\(subtitle) Image=\(imageLink)")
                 }
             }
         }
