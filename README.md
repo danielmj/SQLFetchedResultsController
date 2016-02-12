@@ -19,7 +19,7 @@ Want to see it in action? Download the example and feel free to enable the DEBUG
 
 # Installation
 
-**If you use Cocoapods, the feel free to add the following to your podfile:**
+**If you use CocoaPods, the feel free to add the following to your podfile:**
 
 ```
 pod 'SQLFetchedResultsController'
@@ -28,7 +28,7 @@ pod 'SQLFetchedResultsController'
 # pod 'SQLFetchedResultsController', '~> X.X.X'
 ```
 
-**If you do not use Cocoapods, do the following:**
+**If you do not use CocoaPods, do the following:**
 
 1. Add the files within Src/ to your project
 2. Grab the latest FMDB version from: https://github.com/ccgus/fmdb
